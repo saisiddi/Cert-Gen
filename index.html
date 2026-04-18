@@ -1,745 +1,1241 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HackStart Certificate | BIRDS Club</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certificate Generator | BIRDS Club</title>
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Inter:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <!-- jsPDF library for PDF generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+      href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --primary: #581c87;
-            /* Deep purple matching the certificate ribbon */
-            --primary-hover: #4c1d95;
-            --primary-light: #f3e8ff;
-            --accent: #e11d48;
-            /* Red/pink from the ribbon */
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
+      /* Load Custom Fonts if provided in the folder */
+      @font-face {
+        font-family: "Anastasia Script";
+        src:
+          local("Anastasia Script"),
+          url("AnastasiaScript.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: "Symphony";
+        src:
+          local("Symphony"),
+          url("Symphony.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      :root {
+        --primary: #581c87;
+        /* Deep purple matching the certificate ribbon */
+        --primary-hover: #4c1d95;
+        --primary-light: #f3e8ff;
+        --accent: #e11d48;
+        /* Red/pink from the ribbon */
+        --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        overflow-x: hidden;
+      }
+
+      /* Ambient background shapes for premium feel */
+      .bg-shape {
+        position: fixed;
+        z-index: -1;
+        filter: blur(100px);
+        opacity: 0.5;
+        border-radius: 50%;
+        animation: float 20s infinite alternate ease-in-out;
+      }
+
+      .shape-1 {
+        width: 400px;
+        height: 400px;
+        background-color: var(--primary-light);
+        top: -100px;
+        left: -100px;
+      }
+
+      .shape-2 {
+        width: 500px;
+        height: 500px;
+        background-color: #ffe4e6;
+        bottom: -200px;
+        right: -100px;
+        animation-delay: -5s;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translate(0, 0) scale(1);
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            overflow-x: hidden;
+        100% {
+          transform: translate(50px, 30px) scale(1.05);
+        }
+      }
+
+      /* --- SCREEN 1: Input Form --- */
+      #loginScreen {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        padding: 50px 40px;
+        border-radius: 20px;
+        box-shadow:
+          0 20px 40px -10px rgba(0, 0, 0, 0.1),
+          0 1px 3px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        max-width: 460px;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        box-sizing: border-box;
+        margin: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      #adminScreen {
+        display: none;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        padding: 50px 40px;
+        border-radius: 20px;
+        box-shadow:
+          0 20px 40px -10px rgba(0, 0, 0, 0.1),
+          0 1px 3px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        max-width: 460px;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        box-sizing: border-box;
+        margin: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      /* Logo / Header Area */
+      .event-badge {
+        display: inline-block;
+        background: var(--primary-light);
+        color: var(--primary);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+      }
+
+      #loginScreen h1 {
+        font-size: 2rem;
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      #adminScreen h1 {
+        font-size: 2rem;
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      #loginScreen p {
+        color: var(--text-muted);
+        margin-bottom: 35px;
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+
+      #adminScreen p {
+        color: var(--text-muted);
+        margin-bottom: 24px;
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+
+      .input-group {
+        text-align: left;
+        margin-bottom: 25px;
+      }
+
+      .section-divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 24px 0;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        font-weight: 600;
+      }
+
+      .section-divider::before,
+      .section-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #e2e8f0;
+      }
+
+      .admin-login-wrap {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 18px;
+        text-align: left;
+      }
+
+      .admin-login-wrap h3,
+      .admin-panel h3 {
+        margin: 0 0 14px 0;
+        font-size: 1rem;
+        color: var(--text-main);
+      }
+
+      .admin-login-wrap p,
+      .admin-panel p {
+        margin: 0 0 14px 0;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .admin-error {
+        display: none;
+        color: #b91c1c;
+        font-size: 0.85rem;
+        margin-top: -10px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .admin-panel {
+        margin-top: 20px;
+        display: none;
+        text-align: left;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 18px;
+      }
+
+      .choice-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .choice-btn {
+        border: 2px solid #e2e8f0;
+        background: #ffffff;
+        color: var(--text-main);
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .choice-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .choice-btn.active {
+        background: var(--primary-light);
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        background-color: #f8fafc;
+      }
+
+      .input-group input:focus {
+        outline: none;
+        border-color: var(--primary);
+        background-color: #ffffff;
+        box-shadow: 0 0 0 4px var(--primary-light);
+      }
+
+      .input-group input::placeholder {
+        color: #cbd5e1;
+      }
+
+      /* --- SCREEN 2: Generator View --- */
+      #generatorScreen {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        height: 100vh;
+      }
+
+      .header {
+        width: 100%;
+        padding: 15px 30px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-sizing: border-box;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        height: 75px;
+      }
+
+      .header-title-area {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .header-title {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .header-subtitle {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        border-left: 1px solid #e2e8f0;
+        padding-left: 12px;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 12px;
+      }
+
+      .workspace {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+        width: 100%;
+        height: calc(100vh - 75px);
+        box-sizing: border-box;
+      }
+
+      .preview-wrapper {
+        position: relative;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 100%;
+        max-height: 100%;
+        border: 1px solid #e2e8f0;
+      }
+
+      #certImage {
+        display: block;
+        max-width: 100%;
+        max-height: calc(100vh - 135px);
+        object-fit: contain;
+      }
+
+      #nameOverlay {
+        position: absolute;
+        font-family: "Pinyon Script", cursive;
+        color: #000000;
+        white-space: nowrap;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        transform-origin: center center;
+        text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+      }
+
+      /* --- SCREEN 3: Success Modal --- */
+      #successModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 50px 40px;
+        border-radius: 24px;
+        text-align: center;
+        max-width: 450px;
+        width: 90%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        transform: translateY(20px);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .success-icon {
+        width: 80px;
+        height: 80px;
+        background: #dcfce7;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto 25px;
+        color: #16a34a;
+      }
+
+      .success-icon svg {
+        width: 40px;
+        height: 40px;
+      }
+
+      .modal-content h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin: 0 0 15px 0;
+      }
+
+      .modal-content p {
+        color: var(--text-muted);
+        font-size: 1.05rem;
+        line-height: 1.6;
+        margin: 0 0 30px 0;
+        padding: 0 10px;
+      }
+
+      /* --- Buttons --- */
+      .btn {
+        padding: 14px 28px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-family: inherit;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-hover)
+        );
+        color: white;
+        width: 100%;
+        box-shadow: 0 4px 14px 0 rgba(88, 28, 135, 0.25);
+      }
+
+      .header-actions .btn-primary {
+        width: auto;
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        border-radius: 8px;
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px 0 rgba(88, 28, 135, 0.4);
+      }
+
+      .btn-secondary {
+        background-color: white;
+        color: var(--text-main);
+        border: 2px solid #e2e8f0;
+      }
+
+      .header-actions .btn-secondary {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .btn-secondary:hover:not(:disabled) {
+        background-color: #f8fafc;
+        border-color: #cbd5e1;
+      }
+
+      .btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: none !important;
+      }
+
+      /* --- Loading Spinner --- */
+      .loader {
+        display: none;
+        width: 18px;
+        height: 18px;
+        border: 2.5px solid rgba(255, 255, 255, 0.3);
+        border-bottom-color: #ffffff;
+        border-radius: 50%;
+        animation: rotation 1s linear infinite;
+      }
+
+      @keyframes rotation {
+        0% {
+          transform: rotate(0deg);
         }
 
-        /* Ambient background shapes for premium feel */
-        .bg-shape {
-            position: fixed;
-            z-index: -1;
-            filter: blur(100px);
-            opacity: 0.5;
-            border-radius: 50%;
-            animation: float 20s infinite alternate ease-in-out;
+        100% {
+          transform: rotate(360deg);
         }
+      }
 
-        .shape-1 {
-            width: 400px;
-            height: 400px;
-            background-color: var(--primary-light);
-            top: -100px;
-            left: -100px;
-        }
-
-        .shape-2 {
-            width: 500px;
-            height: 500px;
-            background-color: #ffe4e6;
-            bottom: -200px;
-            right: -100px;
-            animation-delay: -5s;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            100% {
-                transform: translate(50px, 30px) scale(1.05);
-            }
-        }
-
-        /* --- SCREEN 1: Input Form --- */
+      /* --- Mobile Responsiveness --- */
+      @media (max-width: 600px) {
         #loginScreen {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 50px 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
-            width: 100%;
-            max-width: 460px;
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-sizing: border-box;
-            margin: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
+          padding: 30px 20px;
+          margin: 0;
+          border-radius: 0;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          max-width: 100%;
+          border: none;
         }
 
-        /* Logo / Header Area */
-        .event-badge {
-            display: inline-block;
-            background: var(--primary-light);
-            color: var(--primary);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-
-        #loginScreen h1 {
-            font-size: 2rem;
-            margin-top: 0;
-            margin-bottom: 8px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        #loginScreen p {
-            color: var(--text-muted);
-            margin-bottom: 35px;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .input-group {
-            text-align: left;
-            margin-bottom: 25px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1.05rem;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-            font-family: inherit;
-            background-color: #f8fafc;
-        }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background-color: #ffffff;
-            box-shadow: 0 0 0 4px var(--primary-light);
-        }
-
-        .input-group input::placeholder {
-            color: #cbd5e1;
-        }
-
-        /* --- SCREEN 2: Generator View --- */
-        #generatorScreen {
-            display: none;
-            flex-direction: column;
-            width: 100%;
-            height: 100vh;
+        #adminScreen {
+          padding: 30px 20px;
+          margin: 0;
+          border-radius: 0;
+          min-height: 100vh;
+          display: none;
+          flex-direction: column;
+          justify-content: center;
+          max-width: 100%;
+          border: none;
         }
 
         .header {
-            width: 100%;
-            padding: 15px 30px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #f1f5f9;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-sizing: border-box;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            height: 75px;
+          padding: 10px 15px;
+          flex-wrap: wrap;
+          gap: 10px;
+          height: auto;
         }
 
         .header-title-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-title {
-            margin: 0;
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--primary);
+          width: 100%;
+          justify-content: space-between;
+          margin-bottom: 5px;
         }
 
         .header-subtitle {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            font-weight: 500;
-            border-left: 1px solid #e2e8f0;
-            padding-left: 12px;
+          border-left: none;
+          padding-left: 0;
+          font-size: 0.8rem;
         }
 
         .header-actions {
-            display: flex;
-            gap: 12px;
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .header-actions .btn {
+          flex: 1;
+          font-size: 0.85rem;
+          padding: 8px 10px;
         }
 
         .workspace {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
-            width: 100%;
-            height: calc(100vh - 75px);
-            box-sizing: border-box;
-        }
-
-        .preview-wrapper {
-            position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            max-width: 100%;
-            max-height: 100%;
-            border: 1px solid #e2e8f0;
+          padding: 10px;
+          height: auto;
+          min-height: calc(100vh - 100px);
         }
 
         #certImage {
-            display: block;
-            max-width: 100%;
-            max-height: calc(100vh - 135px);
-            object-fit: contain;
-        }
-
-        #nameOverlay {
-            position: absolute;
-            font-family: 'Pinyon Script', cursive;
-            color: #000000;
-            white-space: nowrap;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            transform-origin: center center;
-            text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
-        }
-
-        /* --- SCREEN 3: Success Modal --- */
-        #successModal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+          max-height: calc(100vh - 140px);
         }
 
         .modal-content {
-            background: white;
-            padding: 50px 40px;
-            border-radius: 24px;
-            text-align: center;
-            max-width: 450px;
-            width: 90%;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            transform: translateY(20px);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          padding: 30px 20px;
         }
-
-        .success-icon {
-            width: 80px;
-            height: 80px;
-            background: #dcfce7;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 25px;
-            color: #16a34a;
-        }
-
-        .success-icon svg {
-            width: 40px;
-            height: 40px;
-        }
-
-        .modal-content h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin: 0 0 15px 0;
-        }
-
-        .modal-content p {
-            color: var(--text-muted);
-            font-size: 1.05rem;
-            line-height: 1.6;
-            margin: 0 0 30px 0;
-            padding: 0 10px;
-        }
-
-        /* --- Buttons --- */
-        .btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-family: inherit;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-            color: white;
-            width: 100%;
-            box-shadow: 0 4px 14px 0 rgba(88, 28, 135, 0.25);
-        }
-
-        .header-actions .btn-primary {
-            width: auto;
-            padding: 10px 20px;
-            font-size: 0.95rem;
-            border-radius: 8px;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px 0 rgba(88, 28, 135, 0.4);
-        }
-
-        .btn-secondary {
-            background-color: white;
-            color: var(--text-main);
-            border: 2px solid #e2e8f0;
-        }
-
-        .header-actions .btn-secondary {
-            padding: 10px 20px;
-            font-size: 0.95rem;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background-color: #f8fafc;
-            border-color: #cbd5e1;
-        }
-
-        .btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-
-        /* --- Loading Spinner --- */
-        .loader {
-            display: none;
-            width: 18px;
-            height: 18px;
-            border: 2.5px solid rgba(255, 255, 255, 0.3);
-            border-bottom-color: #ffffff;
-            border-radius: 50%;
-            animation: rotation 1s linear infinite;
-        }
-
-        @keyframes rotation {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* --- Mobile Responsiveness --- */
-        @media (max-width: 600px) {
-            #loginScreen {
-                padding: 30px 20px;
-                margin: 0;
-                border-radius: 0;
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                max-width: 100%;
-                border: none;
-            }
-
-            .header {
-                padding: 10px 15px;
-                flex-wrap: wrap;
-                gap: 10px;
-                height: auto;
-            }
-
-            .header-title-area {
-                width: 100%;
-                justify-content: space-between;
-                margin-bottom: 5px;
-            }
-
-            .header-subtitle {
-                border-left: none;
-                padding-left: 0;
-                font-size: 0.8rem;
-            }
-
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .header-actions .btn {
-                flex: 1;
-                font-size: 0.85rem;
-                padding: 8px 10px;
-            }
-
-            .workspace {
-                padding: 10px;
-                height: auto;
-                min-height: calc(100vh - 100px);
-            }
-
-            #certImage {
-                max-height: calc(100vh - 140px);
-            }
-
-            .modal-content {
-                padding: 30px 20px;
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <!-- Ambient Background Shapes -->
     <div class="bg-shape shape-1"></div>
     <div class="bg-shape shape-2"></div>
 
     <!-- SCREEN 1: Input Form -->
     <div id="loginScreen">
-        <span class="event-badge">HackStart</span>
-        <h1>Claim Your Certificate</h1>
-        <p>Enter your name exactly as you'd like it to appear on your official HackStart certificate, brought to you by
-            <strong>BIRDS Club</strong>.
-        </p>
+      <span class="event-badge">Official Certificate</span>
+      <h1>Claim Your Certificate</h1>
+      <p>
+        Enter your name exactly as you'd like it to appear on your official
+        certificate, brought to you by <strong>BIRDS Club</strong>.
+      </p>
 
-        <form id="nameForm">
-            <div class="input-group">
-                <label for="studentNameInput">Full Name</label>
-                <input type="text" id="studentNameInput" placeholder="e.g. Siddi" required autocomplete="name">
-            </div>
-            <button type="submit" class="btn btn-primary">
-                Preview Certificate
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-            </button>
+      <form id="nameForm">
+        <div class="input-group">
+          <label for="studentNameInput">Full Name</label>
+          <input
+            type="text"
+            id="studentNameInput"
+            placeholder="e.g. Siddi"
+            required
+            autocomplete="name"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">
+          Preview Certificate
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </form>
+
+      <div class="section-divider">Portal</div>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        id="openAdminScreenBtn"
+        style="width: 100%"
+      >
+        Go To Admin
+      </button>
+    </div>
+
+    <!-- SCREEN 1B: Admin Page -->
+    <div id="adminScreen">
+      <span class="event-badge">BIRDS Club Admin</span>
+      <h1>Admin Portal</h1>
+      <p>Login to generate Runner and Winner certificates.</p>
+
+      <div class="admin-login-wrap" id="adminLoginWrap">
+        <h3>Admin Login</h3>
+        <form id="adminLoginForm">
+          <div class="input-group">
+            <label for="adminUsernameInput">Username</label>
+            <input
+              type="text"
+              id="adminUsernameInput"
+              placeholder="Admin username"
+              required
+              autocomplete="username"
+            />
+          </div>
+          <div class="input-group">
+            <label for="adminPasswordInput">Password</label>
+            <input
+              type="password"
+              id="adminPasswordInput"
+              placeholder="Password"
+              required
+              autocomplete="current-password"
+            />
+          </div>
+          <div class="admin-error" id="adminErrorMsg">
+            Invalid username or password.
+          </div>
+          <button type="submit" class="btn btn-secondary" style="width: 100%">
+            Login as Admin
+          </button>
         </form>
+      </div>
+
+      <div class="admin-panel" id="adminPanel">
+        <h3>Admin Certificate Generator</h3>
+        <p>Select certificate type, enter participant name, and preview.</p>
+
+        <div class="choice-grid">
+          <button id="runnerTypeBtn" type="button" class="choice-btn">
+            Runner
+          </button>
+          <button id="winnerTypeBtn" type="button" class="choice-btn">
+            Winner
+          </button>
+        </div>
+
+        <form id="adminNameForm">
+          <div class="input-group" style="margin-bottom: 16px">
+            <label for="adminStudentNameInput">Full Name</label>
+            <input
+              type="text"
+              id="adminStudentNameInput"
+              placeholder="e.g. Alex"
+              required
+              autocomplete="name"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%">
+            Preview Selected Certificate
+          </button>
+        </form>
+      </div>
+
+      <div class="section-divider">Navigation</div>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        id="backToUserBtn"
+        style="width: 100%"
+      >
+        Back To User Page
+      </button>
     </div>
 
     <!-- SCREEN 2: Generator View -->
     <div id="generatorScreen">
-        <header class="header">
-            <div class="header-title-area">
-                <h1 class="header-title">HackStart</h1>
-                <span class="header-subtitle">BIRDS Club</span>
-            </div>
-            <div class="header-actions">
-                <button id="backBtn" class="btn btn-secondary">Edit Name</button>
-                <button id="downloadBtn" class="btn btn-primary">
-                    <span class="loader" id="btnLoader"></span>
-                    <span id="btnText">Download PDF</span>
-                    <svg id="downloadIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                </button>
-            </div>
-        </header>
+      <header class="header">
+        <div class="header-title-area">
+          <h1 class="header-title">BIRDS Club</h1>
+          <span class="header-subtitle" id="certTypeLabel">Participation</span>
+        </div>
+        <div class="header-actions">
+          <button id="backBtn" class="btn btn-secondary">Back</button>
+          <button id="downloadBtn" class="btn btn-primary">
+            <span class="loader" id="btnLoader"></span>
+            <span id="btnText">Download JPG</span>
+            <svg
+              id="downloadIcon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
+        </div>
+      </header>
 
-        <main class="workspace">
-            <div class="preview-wrapper" id="previewWrapper">
-                <img id="certImage" src="certificate.jpg" alt="Certificate Background">
-                <div id="nameOverlay"></div>
-            </div>
-        </main>
+      <main class="workspace">
+        <div class="preview-wrapper" id="previewWrapper">
+          <img
+            id="certImage"
+            src="Certs/Participation_Certificate.jpg"
+            alt="Certificate Background"
+          />
+          <div id="nameOverlay"></div>
+        </div>
+      </main>
     </div>
 
     <!-- SCREEN 3: Success Modal -->
     <div id="successModal">
-        <div class="modal-content">
-            <div class="success-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-            </div>
-            <h2>Got your Certificate!</h2>
-            <p>Thank you for joining <strong>HackStart</strong>! We hope you had a fantastic time learning and
-                innovating with <strong>BIRDS Club</strong>. Keep learning and building great things!</p>
-            <button id="closeModalBtn" class="btn btn-primary">Return Home</button>
+      <div class="modal-content">
+        <div class="success-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
         </div>
+        <h2>Got your Certificate!</h2>
+        <p>
+          Your certificate is ready and downloaded. Thank you for your
+          participation and for being part of
+          <strong>BIRDS Club</strong> events.
+        </p>
+        <button id="closeModalBtn" class="btn btn-primary">Return Home</button>
+      </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // DOM Elements
-            const loginScreen = document.getElementById('loginScreen');
-            const generatorScreen = document.getElementById('generatorScreen');
-            const successModal = document.getElementById('successModal');
+      document.addEventListener("DOMContentLoaded", () => {
+        // DOM Elements
+        const loginScreen = document.getElementById("loginScreen");
+        const adminScreen = document.getElementById("adminScreen");
+        const generatorScreen = document.getElementById("generatorScreen");
+        const successModal = document.getElementById("successModal");
+        const certTypeLabel = document.getElementById("certTypeLabel");
 
-            const nameForm = document.getElementById('nameForm');
-            const studentNameInput = document.getElementById('studentNameInput');
+        const nameForm = document.getElementById("nameForm");
+        const studentNameInput = document.getElementById("studentNameInput");
+        const openAdminScreenBtn =
+          document.getElementById("openAdminScreenBtn");
+        const backToUserBtn = document.getElementById("backToUserBtn");
 
-            const certImage = document.getElementById('certImage');
-            const nameOverlay = document.getElementById('nameOverlay');
+        const adminLoginWrap = document.getElementById("adminLoginWrap");
+        const adminLoginForm = document.getElementById("adminLoginForm");
+        const adminUsernameInput =
+          document.getElementById("adminUsernameInput");
+        const adminPasswordInput =
+          document.getElementById("adminPasswordInput");
+        const adminErrorMsg = document.getElementById("adminErrorMsg");
 
-            const backBtn = document.getElementById('backBtn');
-            const downloadBtn = document.getElementById('downloadBtn');
-            const downloadIcon = document.getElementById('downloadIcon');
-            const btnLoader = document.getElementById('btnLoader');
-            const btnText = document.getElementById('btnText');
+        const adminPanel = document.getElementById("adminPanel");
+        const runnerTypeBtn = document.getElementById("runnerTypeBtn");
+        const winnerTypeBtn = document.getElementById("winnerTypeBtn");
+        const adminNameForm = document.getElementById("adminNameForm");
+        const adminStudentNameInput = document.getElementById(
+          "adminStudentNameInput",
+        );
 
-            const closeModalBtn = document.getElementById('closeModalBtn');
+        const certImage = document.getElementById("certImage");
+        const nameOverlay = document.getElementById("nameOverlay");
 
-            // State
-            let studentName = "";
+        const backBtn = document.getElementById("backBtn");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const downloadIcon = document.getElementById("downloadIcon");
+        const btnLoader = document.getElementById("btnLoader");
+        const btnText = document.getElementById("btnText");
 
-            // CONFIGURATION for text placement
-            const CONFIG = {
-                xPosPercent: 0.335,
-                yPosPercent: 0.485,
-                maxWidthPercent: 0.50,
-                fontSizePercent: 0.12
-            };
+        const closeModalBtn = document.getElementById("closeModalBtn");
 
-            // Switch to Generator Screen
-            nameForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                studentName = studentNameInput.value.trim();
+        // State
+        let studentName = "";
+        let selectedCertType = "participation";
+        let isAdminMode = false;
+        const detectedLineLayoutByImage = {};
 
-                if (studentName) {
-                    nameOverlay.textContent = studentName;
+        const ADMIN_CREDENTIALS = {
+          username: "birdscanfly",
+          password: "birds123",
+        };
 
-                    // Transition
-                    loginScreen.style.opacity = '0';
-                    setTimeout(() => {
-                        loginScreen.style.display = 'none';
-                        generatorScreen.style.display = 'flex';
-                        document.body.style.display = 'block';
+        const CERT_CONFIGS = {
+          participation: {
+            label: "Participation",
+            image: "Certs/Participation_Certificate.jpg",
+            fontFamily: '"Anastasia Script", "Pinyon Script", cursive',
+            xPosPercent: 0.585,
+            yPosPercent: 0.565,
+            maxWidthPercent: 0.6,
+            fontSizePercent: 0.105,
+            textBaseline: "bottom",
+            transformY: "-100%",
+          },
+          runner: {
+            label: "Runner",
+            image: "Certs/Runner.jpg",
+            fontFamily: '"Symphony", "Times New Roman", serif',
+            xPosPercent: 0.5,
+            yPosPercent: 0.53,
+            maxWidthPercent: 0.78,
+            fontSizePercent: 0.12,
+            textBaseline: "middle",
+            transformY: "-50%",
+          },
+          winner: {
+            label: "Winner",
+            image: "Certs/Winner.jpg",
+            fontFamily: '"Symphony", "Times New Roman", serif',
+            xPosPercent: 0.5,
+            yPosPercent: 0.53,
+            maxWidthPercent: 0.78,
+            fontSizePercent: 0.12,
+            textBaseline: "middle",
+            transformY: "-50%",
+          },
+        };
 
-                        // Force layout calc then adjust size
-                        setTimeout(() => {
-                            adjustOverlaySize();
-                        }, 50);
-                    }, 300);
-                }
-            });
+        function getCurrentConfig() {
+          return CERT_CONFIGS[selectedCertType];
+        }
 
-            // Switch to Login Screen
-            backBtn.addEventListener('click', () => {
-                generatorScreen.style.display = 'none';
-                loginScreen.style.display = 'block';
-                document.body.style.display = 'flex';
-                setTimeout(() => {
-                    loginScreen.style.opacity = '1';
-                }, 50);
-            });
+        function getResolvedConfig(renderWidth, renderHeight) {
+          return getCurrentConfig();
+        }
 
-            // Close Modal & Reset
-            closeModalBtn.addEventListener('click', () => {
-                successModal.style.opacity = '0';
-                successModal.querySelector('.modal-content').style.transform = 'translateY(20px)';
+        function updateCertTypeButtons() {
+          runnerTypeBtn.classList.toggle(
+            "active",
+            selectedCertType === "runner",
+          );
+          winnerTypeBtn.classList.toggle(
+            "active",
+            selectedCertType === "winner",
+          );
+        }
 
-                setTimeout(() => {
-                    successModal.style.display = 'none';
-                    // Reset to home
-                    generatorScreen.style.display = 'none';
-                    studentNameInput.value = '';
-                    loginScreen.style.display = 'block';
-                    document.body.style.display = 'flex';
-                    setTimeout(() => {
-                        loginScreen.style.opacity = '1';
-                    }, 50);
-                }, 300);
-            });
+        function updateCertificatePreview() {
+          const cfg = getCurrentConfig();
+          certImage.src = cfg.image;
+          certTypeLabel.textContent = cfg.label;
+          nameOverlay.style.fontFamily = cfg.fontFamily;
+        }
 
-            // Calculate Date and Size
-            function adjustOverlaySize() {
-                if (certImage.complete && certImage.naturalHeight > 0) {
-                    const rect = certImage.getBoundingClientRect();
-                    const renderedWidth = rect.width;
-                    const renderedHeight = rect.height;
+        function openGeneratorWithName(nameValue, certType, adminMode = false) {
+          studentName = nameValue;
+          selectedCertType = certType;
+          isAdminMode = adminMode;
 
-                    const xPos = renderedWidth * CONFIG.xPosPercent;
-                    const yPos = renderedHeight * CONFIG.yPosPercent;
+          nameOverlay.textContent = studentName;
+          updateCertificatePreview();
 
-                    nameOverlay.style.left = `${xPos}px`;
-                    nameOverlay.style.top = `${yPos}px`;
+          if (adminMode) {
+            adminScreen.style.opacity = "0";
+          } else {
+            loginScreen.style.opacity = "0";
+          }
 
-                    const baseFontSize = renderedHeight * CONFIG.fontSizePercent;
-                    nameOverlay.style.fontSize = `${baseFontSize}px`;
+          setTimeout(() => {
+            loginScreen.style.display = "none";
+            adminScreen.style.display = "none";
+            generatorScreen.style.display = "flex";
+            document.body.style.display = "block";
 
-                    nameOverlay.style.transform = `translate(-50%, -50%) scale(1)`;
+            setTimeout(() => {
+              adjustOverlaySize();
+            }, 60);
+          }, 300);
+        }
 
-                    const textWidth = nameOverlay.offsetWidth;
-                    const maxWidth = renderedWidth * CONFIG.maxWidthPercent;
+        // Switch to Generator Screen for normal user (Participation)
+        nameForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const inputName = studentNameInput.value.trim();
 
-                    if (textWidth > maxWidth) {
-                        const scaleFactor = maxWidth / textWidth;
-                        nameOverlay.style.transform = `translate(-50%, -50%) scale(${scaleFactor})`;
-                    }
-                }
-            }
-
-            window.addEventListener('resize', () => {
-                if (generatorScreen.style.display !== 'none') {
-                    adjustOverlaySize();
-                }
-            });
-            certImage.addEventListener('load', adjustOverlaySize);
-
-            // Show Success Modal
-            function showSuccess() {
-                successModal.style.display = 'flex';
-                // Trigger reflow
-                void successModal.offsetWidth;
-                successModal.style.opacity = '1';
-                successModal.querySelector('.modal-content').style.transform = 'translateY(0)';
-            }
-
-            // PDF Generation
-            downloadBtn.addEventListener('click', async () => {
-                if (!studentName) return;
-
-                // Set loading state
-                downloadBtn.disabled = true;
-                btnLoader.style.display = 'block';
-                downloadIcon.style.display = 'none';
-                btnText.textContent = 'Generating PDF...';
-
-                try {
-                    await document.fonts.ready;
-
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-
-                    canvas.width = certImage.naturalWidth;
-                    canvas.height = certImage.naturalHeight;
-
-                    ctx.drawImage(certImage, 0, 0);
-
-                    const xPos = canvas.width * CONFIG.xPosPercent;
-                    const yPos = canvas.height * CONFIG.yPosPercent;
-                    const baseFontSize = canvas.height * CONFIG.fontSizePercent;
-                    const maxWidth = canvas.width * CONFIG.maxWidthPercent;
-
-                    ctx.font = `${baseFontSize}px "Pinyon Script"`;
-                    ctx.fillStyle = '#000000';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-
-                    let textWidth = ctx.measureText(studentName).width;
-                    let renderFontSize = baseFontSize;
-
-                    if (textWidth > maxWidth) {
-                        const scaleFactor = maxWidth / textWidth;
-                        renderFontSize = baseFontSize * scaleFactor;
-                        ctx.font = `${renderFontSize}px "Pinyon Script"`;
-                    }
-
-                    ctx.fillText(studentName, xPos, yPos);
-
-                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                    const { jsPDF } = window.jspdf;
-                    const orientation = canvas.width > canvas.height ? 'landscape' : 'portrait';
-
-                    const pdf = new jsPDF({
-                        orientation: orientation,
-                        unit: 'px',
-                        format: [canvas.width, canvas.height]
-                    });
-
-                    pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
-
-                    const safeName = studentName.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
-                    pdf.save(`HackStart_Certificate_${safeName}.pdf`);
-
-                    // Show success directly after saving
-                    setTimeout(() => {
-                        showSuccess();
-                    }, 500);
-
-                } catch (error) {
-                    console.error("PDF Generation Error:", error);
-                    if (error.name === 'SecurityError' || error.message.includes('Tainted')) {
-                        alert("Security Error: Please run this file via a local web server.");
-                    } else {
-                        alert("There was an error generating the PDF.");
-                    }
-                } finally {
-                    // Revert UI
-                    downloadBtn.disabled = false;
-                    btnLoader.style.display = 'none';
-                    downloadIcon.style.display = 'block';
-                    btnText.textContent = 'Download PDF';
-                }
-            });
+          if (inputName) {
+            openGeneratorWithName(inputName, "participation", false);
+          }
         });
-    </script>
-</body>
 
+        openAdminScreenBtn.addEventListener("click", () => {
+          loginScreen.style.display = "none";
+          adminScreen.style.display = "block";
+          document.body.style.display = "flex";
+          setTimeout(() => {
+            adminScreen.style.opacity = "1";
+          }, 50);
+        });
+
+        backToUserBtn.addEventListener("click", () => {
+          adminScreen.style.display = "none";
+          loginScreen.style.display = "block";
+          document.body.style.display = "flex";
+          setTimeout(() => {
+            loginScreen.style.opacity = "1";
+          }, 50);
+        });
+
+        // Admin login flow
+        adminLoginForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const username = adminUsernameInput.value.trim();
+          const password = adminPasswordInput.value;
+
+          if (
+            username === ADMIN_CREDENTIALS.username &&
+            password === ADMIN_CREDENTIALS.password
+          ) {
+            adminErrorMsg.style.display = "none";
+            adminLoginWrap.style.display = "none";
+            adminPanel.style.display = "block";
+            selectedCertType = "runner";
+            updateCertTypeButtons();
+          } else {
+            adminErrorMsg.style.display = "block";
+          }
+        });
+
+        runnerTypeBtn.addEventListener("click", () => {
+          selectedCertType = "runner";
+          updateCertTypeButtons();
+        });
+
+        winnerTypeBtn.addEventListener("click", () => {
+          selectedCertType = "winner";
+          updateCertTypeButtons();
+        });
+
+        adminNameForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const inputName = adminStudentNameInput.value.trim();
+
+          if (inputName) {
+            openGeneratorWithName(inputName, selectedCertType, true);
+          }
+        });
+
+        // Switch to Login Screen
+        backBtn.addEventListener("click", () => {
+          generatorScreen.style.display = "none";
+          if (isAdminMode) {
+            adminScreen.style.display = "block";
+          } else {
+            loginScreen.style.display = "block";
+          }
+          document.body.style.display = "flex";
+          setTimeout(() => {
+            if (isAdminMode) {
+              adminScreen.style.opacity = "1";
+            } else {
+              loginScreen.style.opacity = "1";
+            }
+          }, 50);
+        });
+
+        // Close Modal & Reset
+        closeModalBtn.addEventListener("click", () => {
+          successModal.style.opacity = "0";
+          successModal.querySelector(".modal-content").style.transform =
+            "translateY(20px)";
+
+          setTimeout(() => {
+            successModal.style.display = "none";
+            // Reset to home
+            generatorScreen.style.display = "none";
+            studentNameInput.value = "";
+            adminStudentNameInput.value = "";
+            loginScreen.style.display = "block";
+            adminScreen.style.display = "none";
+            document.body.style.display = "flex";
+
+            adminLoginWrap.style.display = "block";
+            adminPanel.style.display = "none";
+            adminUsernameInput.value = "";
+            adminPasswordInput.value = "";
+            adminErrorMsg.style.display = "none";
+
+            selectedCertType = "participation";
+            isAdminMode = false;
+
+            setTimeout(() => {
+              loginScreen.style.opacity = "1";
+            }, 50);
+          }, 300);
+        });
+
+        function resetToHome() {
+          generatorScreen.style.display = "none";
+          studentNameInput.value = "";
+          adminStudentNameInput.value = "";
+          loginScreen.style.display = "block";
+          adminScreen.style.display = "none";
+          document.body.style.display = "flex";
+
+          adminLoginWrap.style.display = "block";
+          adminPanel.style.display = "none";
+          adminUsernameInput.value = "";
+          adminPasswordInput.value = "";
+          adminErrorMsg.style.display = "none";
+
+          selectedCertType = "participation";
+          isAdminMode = false;
+
+          setTimeout(() => {
+            loginScreen.style.opacity = "1";
+          }, 50);
+        }
+
+        // Calculate Name position and size
+        function adjustOverlaySize() {
+          if (certImage.complete && certImage.naturalHeight > 0) {
+            const cfg = getResolvedConfig(
+              certImage.naturalWidth,
+              certImage.naturalHeight,
+            );
+            const rect = certImage.getBoundingClientRect();
+            const renderedWidth = rect.width;
+            const renderedHeight = rect.height;
+
+            const xPos = renderedWidth * cfg.xPosPercent;
+            const yPos = renderedHeight * cfg.yPosPercent;
+
+            nameOverlay.style.left = `${xPos}px`;
+            nameOverlay.style.top = `${yPos}px`;
+
+            const baseFontSize = renderedHeight * cfg.fontSizePercent;
+            nameOverlay.style.fontSize = `${baseFontSize}px`;
+            nameOverlay.style.fontFamily = cfg.fontFamily;
+
+            const transformY = cfg.transformY || "-50%";
+            nameOverlay.style.transform = `translate(-50%, ${transformY}) scale(1)`;
+
+            const textWidth = nameOverlay.offsetWidth;
+            const maxWidth = renderedWidth * cfg.maxWidthPercent;
+
+            if (textWidth > maxWidth) {
+              const scaleFactor = maxWidth / textWidth;
+              nameOverlay.style.transform = `translate(-50%, ${transformY}) scale(${scaleFactor})`;
+            }
+          }
+        }
+
+        window.addEventListener("resize", () => {
+          if (generatorScreen.style.display !== "none") {
+            adjustOverlaySize();
+          }
+        });
+        certImage.addEventListener("load", adjustOverlaySize);
+
+        // Show Success Modal
+        function showSuccess() {
+          successModal.style.display = "flex";
+          // Trigger reflow
+          void successModal.offsetWidth;
+          successModal.style.opacity = "1";
+          successModal.querySelector(".modal-content").style.transform =
+            "translateY(0)";
+        }
+
+        // JPG Generation
+        downloadBtn.addEventListener("click", async () => {
+          if (!studentName) return;
+
+          // Set loading state
+          downloadBtn.disabled = true;
+          btnLoader.style.display = "block";
+          downloadIcon.style.display = "none";
+          btnText.textContent = "Generating JPG...";
+
+          try {
+            await document.fonts.ready;
+
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            canvas.width = certImage.naturalWidth;
+            canvas.height = certImage.naturalHeight;
+
+            const cfg = getResolvedConfig(canvas.width, canvas.height);
+
+            ctx.drawImage(certImage, 0, 0);
+
+            const xPos = canvas.width * cfg.xPosPercent;
+            const yPos = canvas.height * cfg.yPosPercent;
+            const baseFontSize = canvas.height * cfg.fontSizePercent;
+            const maxWidth = canvas.width * cfg.maxWidthPercent;
+
+            ctx.font = `${baseFontSize}px ${cfg.fontFamily}`;
+            ctx.fillStyle = "#000000";
+            ctx.textAlign = "center";
+            ctx.textBaseline = cfg.textBaseline || "middle";
+
+            let textWidth = ctx.measureText(studentName).width;
+            let renderFontSize = baseFontSize;
+
+            if (textWidth > maxWidth) {
+              const scaleFactor = maxWidth / textWidth;
+              renderFontSize = baseFontSize * scaleFactor;
+              ctx.font = `${renderFontSize}px ${cfg.fontFamily}`;
+            }
+
+            ctx.fillText(studentName, xPos, yPos);
+
+            const safeName = studentName
+              .replace(/[^a-zA-Z0-9]/g, "_")
+              .toLowerCase();
+            const certPrefix = isAdminMode ? cfg.label : "Participation";
+            const fileName = `BIRDS_Club_${certPrefix}_Certificate_${safeName}.jpg`;
+            const imageUrl = canvas.toDataURL("image/jpeg", 1.0);
+
+            const tempLink = document.createElement("a");
+            tempLink.href = imageUrl;
+            tempLink.download = fileName;
+            tempLink.click();
+
+            // Show success directly after saving
+            setTimeout(() => {
+              showSuccess();
+            }, 500);
+          } catch (error) {
+            console.error("JPG Generation Error:", error);
+            if (
+              error.name === "SecurityError" ||
+              error.message.includes("Tainted")
+            ) {
+              alert(
+                "Security Error: Please run this file via a local web server.",
+              );
+            } else {
+              alert("There was an error generating the JPG.");
+            }
+          } finally {
+            // Revert UI
+            downloadBtn.disabled = false;
+            btnLoader.style.display = "none";
+            downloadIcon.style.display = "block";
+            btnText.textContent = "Download JPG";
+          }
+        });
+
+        updateCertificatePreview();
+        updateCertTypeButtons();
+      });
+    </script>
+  </body>
 </html>
