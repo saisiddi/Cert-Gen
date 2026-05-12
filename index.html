@@ -990,7 +990,7 @@
         const imagePath =
           certType === "participation"
             ? PARTICIPATION_IMAGE_MAP[eventId]
-            : certType === "coordinator"
+            : ["coordinator", "judge", "mentor"].includes(certType)
               ? hiddenCode
                 ? `Certs/coor/${hiddenCode}.jpg`
                 : `Certs/coor/${eventId}.jpg`
