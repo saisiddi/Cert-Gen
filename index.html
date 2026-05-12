@@ -507,7 +507,7 @@
               <input
                 id="studentNameInput"
                 type="text"
-                placeholder="e.g. Alex Patel"
+                placeholder="e.g. Kalmadi Saisiddi"
                 required
                 autocomplete="name"
               />
@@ -623,7 +623,7 @@
                   <input
                     id="adminNameInput"
                     type="text"
-                    placeholder="e.g. Jordan Lee"
+                    placeholder="e.g. Kalmadi Saisiddi"
                     autocomplete="name"
                   />
                 </div>
@@ -1014,40 +1014,6 @@
         const ctx = certCanvas.getContext("2d");
         ctx.clearRect(0, 0, certCanvas.width, certCanvas.height);
         ctx.drawImage(img, 0, 0, certCanvas.width, certCanvas.height);
-
-        try {
-          const centerLogo = new Image();
-          centerLogo.src = encodeURI("Logo.png");
-          await centerLogo.decode();
-
-          const logoWidth = certCanvas.width * 0.24;
-          const logoHeight =
-            (logoWidth * centerLogo.naturalHeight) / centerLogo.naturalWidth;
-          const logoX = (certCanvas.width - logoWidth) / 2;
-          const logoY = certCanvas.height * 0.26 - logoHeight / 2;
-
-          ctx.save();
-          ctx.fillStyle = "rgba(92, 58, 33, 0.14)";
-          ctx.strokeStyle = "rgba(212, 175, 55, 0.55)";
-          ctx.lineWidth = Math.max(4, certCanvas.width * 0.002);
-          ctx.beginPath();
-          ctx.ellipse(
-            certCanvas.width / 2,
-            certCanvas.height * 0.275,
-            logoWidth * 0.62,
-            logoHeight * 0.62,
-            0,
-            0,
-            Math.PI * 2,
-          );
-          ctx.fill();
-          ctx.stroke();
-
-          ctx.drawImage(centerLogo, logoX, logoY, logoWidth, logoHeight);
-          ctx.restore();
-        } catch {
-          // If the logo is missing or fails to decode, keep certificate generation working.
-        }
 
         const x = (config.x / 100) * certCanvas.width;
         const y = (config.y / 100) * certCanvas.height;
