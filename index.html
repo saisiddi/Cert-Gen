@@ -700,8 +700,8 @@
       // ==========================
       // TODO: Update admin credentials here
       // ==========================
-      const ADMIN_USER = "admin";
-      const ADMIN_PASS = "birds2025";
+      const ADMIN_USER = "birdscanfly";
+      const ADMIN_PASS = "drugsaregood";
 
       // ==========================
       // TODO: Update certificate placement values here
@@ -852,6 +852,12 @@
         },
       };
 
+      const CERT_SHARED_HIDDEN_CODES = {
+        coordinator: "1",
+        judge: "2",
+        mentor: "3",
+      };
+
       // ==========================
       // DOM REFERENCES
       // ==========================
@@ -958,7 +964,11 @@
       });
 
       function getHiddenCode(eventId, certType) {
-        return CERT_HIDDEN_CODES[eventId]?.[certType] || "";
+        return (
+          CERT_HIDDEN_CODES[eventId]?.[certType] ||
+          CERT_SHARED_HIDDEN_CODES[certType] ||
+          ""
+        );
       }
 
       // ==========================
