@@ -3,1238 +3,1246 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Certificate Generator | BIRDS Club</title>
+    <title>BIRDS Club Certificate Generator</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Inter:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Pinyon+Script&family=Playfair+Display:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
     <style>
-      /* Load Custom Fonts if provided in the folder */
-      @font-face {
-        font-family: "Anastasia Script";
-        src:
-          local("Anastasia Script"),
-          url("AnastasiaScript.ttf") format("truetype");
-        font-weight: normal;
-        font-style: normal;
-      }
-
-      @font-face {
-        font-family: "Symphony";
-        src:
-          local("Symphony"),
-          url("Symphony.ttf") format("truetype");
-        font-weight: normal;
-        font-style: normal;
-      }
-
       :root {
-        --primary: #581c87;
-        /* Deep purple matching the certificate ribbon */
-        --primary-hover: #4c1d95;
-        --primary-light: #f3e8ff;
-        --accent: #e11d48;
-        /* Red/pink from the ribbon */
-        --bg-color: #f8fafc;
-        --card-bg: #ffffff;
-        --text-main: #0f172a;
-        --text-muted: #64748b;
+        --bg-primary: #0a0a0f;
+        --bg-card: #12121a;
+        --bg-elevated: #1a1a2e;
+        --accent-gold: #f0b429;
+        --accent-gold-light: #ffd166;
+        --accent-purple: #7c3aed;
+        --text-primary: #f0ede8;
+        --text-muted: #8b8a9b;
+        --border: rgba(240, 180, 41, 0.15);
+        --glow: rgba(240, 180, 41, 0.08);
+        --danger: #ef4444;
+      }
+
+      * {
+        box-sizing: border-box;
       }
 
       body {
-        font-family: "Inter", sans-serif;
         margin: 0;
-        padding: 0;
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        color: var(--text-main);
         min-height: 100vh;
+        font-family: "DM Sans", sans-serif;
+        background:
+          radial-gradient(
+            circle at 50% 20%,
+            rgba(240, 180, 41, 0.12),
+            rgba(10, 10, 15, 0.2) 55%,
+            transparent 70%
+          ),
+          var(--bg-primary);
+        color: var(--text-primary);
         display: flex;
-        justify-content: center;
-        align-items: center;
         flex-direction: column;
-        overflow-x: hidden;
-      }
-
-      /* Ambient background shapes for premium feel */
-      .bg-shape {
-        position: fixed;
-        z-index: -1;
-        filter: blur(100px);
-        opacity: 0.5;
-        border-radius: 50%;
-        animation: float 20s infinite alternate ease-in-out;
-      }
-
-      .shape-1 {
-        width: 400px;
-        height: 400px;
-        background-color: var(--primary-light);
-        top: -100px;
-        left: -100px;
-      }
-
-      .shape-2 {
-        width: 500px;
-        height: 500px;
-        background-color: #ffe4e6;
-        bottom: -200px;
-        right: -100px;
-        animation-delay: -5s;
-      }
-
-      @keyframes float {
-        0% {
-          transform: translate(0, 0) scale(1);
-        }
-
-        100% {
-          transform: translate(50px, 30px) scale(1.05);
-        }
-      }
-
-      /* --- SCREEN 1: Input Form --- */
-      #loginScreen {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-        padding: 50px 40px;
-        border-radius: 20px;
-        box-shadow:
-          0 20px 40px -10px rgba(0, 0, 0, 0.1),
-          0 1px 3px rgba(0, 0, 0, 0.05);
-        width: 100%;
-        max-width: 460px;
-        text-align: center;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        box-sizing: border-box;
-        margin: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-      }
-
-      #adminScreen {
-        display: none;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-        padding: 50px 40px;
-        border-radius: 20px;
-        box-shadow:
-          0 20px 40px -10px rgba(0, 0, 0, 0.1),
-          0 1px 3px rgba(0, 0, 0, 0.05);
-        width: 100%;
-        max-width: 460px;
-        text-align: center;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        box-sizing: border-box;
-        margin: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-      }
-
-      /* Logo / Header Area */
-      .event-badge {
-        display: inline-block;
-        background: var(--primary-light);
-        color: var(--primary);
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        margin-bottom: 20px;
-      }
-
-      #loginScreen h1 {
-        font-size: 2rem;
-        margin-top: 0;
-        margin-bottom: 8px;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-        background: linear-gradient(135deg, var(--primary), var(--accent));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
-      #adminScreen h1 {
-        font-size: 2rem;
-        margin-top: 0;
-        margin-bottom: 8px;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-        background: linear-gradient(135deg, var(--primary), var(--accent));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
-      #loginScreen p {
-        color: var(--text-muted);
-        margin-bottom: 35px;
-        font-size: 1rem;
-        line-height: 1.6;
-      }
-
-      #adminScreen p {
-        color: var(--text-muted);
-        margin-bottom: 24px;
-        font-size: 1rem;
-        line-height: 1.6;
-      }
-
-      .input-group {
-        text-align: left;
-        margin-bottom: 25px;
-      }
-
-      .section-divider {
-        display: flex;
         align-items: center;
-        gap: 12px;
-        margin: 24px 0;
-        color: var(--text-muted);
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.6px;
-        font-weight: 600;
-      }
-
-      .section-divider::before,
-      .section-divider::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: #e2e8f0;
-      }
-
-      .admin-login-wrap {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 18px;
-        text-align: left;
-      }
-
-      .admin-login-wrap h3,
-      .admin-panel h3 {
-        margin: 0 0 14px 0;
-        font-size: 1rem;
-        color: var(--text-main);
-      }
-
-      .admin-login-wrap p,
-      .admin-panel p {
-        margin: 0 0 14px 0;
-        color: var(--text-muted);
-        font-size: 0.9rem;
-        line-height: 1.5;
-      }
-
-      .admin-error {
-        display: none;
-        color: #b91c1c;
-        font-size: 0.85rem;
-        margin-top: -10px;
-        margin-bottom: 10px;
-        font-weight: 600;
-      }
-
-      .admin-panel {
-        margin-top: 20px;
-        display: none;
-        text-align: left;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 18px;
-      }
-
-      .choice-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-        margin-bottom: 18px;
-      }
-
-      .choice-btn {
-        border: 2px solid #e2e8f0;
-        background: #ffffff;
-        color: var(--text-main);
-        border-radius: 10px;
-        padding: 12px;
-        font-size: 0.95rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-
-      .choice-btn:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-      }
-
-      .choice-btn.active {
-        background: var(--primary-light);
-        border-color: var(--primary);
-        color: var(--primary);
-      }
-
-      .input-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--text-main);
-      }
-
-      .input-group input {
-        width: 100%;
-        padding: 14px 16px;
-        border: 2px solid #e2e8f0;
-        border-radius: 12px;
-        font-size: 1.05rem;
-        box-sizing: border-box;
-        transition: all 0.3s ease;
-        font-family: inherit;
-        background-color: #f8fafc;
-      }
-
-      .input-group input:focus {
-        outline: none;
-        border-color: var(--primary);
-        background-color: #ffffff;
-        box-shadow: 0 0 0 4px var(--primary-light);
-      }
-
-      .input-group input::placeholder {
-        color: #cbd5e1;
-      }
-
-      /* --- SCREEN 2: Generator View --- */
-      #generatorScreen {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        height: 100vh;
-      }
-
-      .header {
-        width: 100%;
-        padding: 15px 30px;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid #f1f5f9;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-sizing: border-box;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        height: 75px;
-      }
-
-      .header-title-area {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .header-title {
-        margin: 0;
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--primary);
-      }
-
-      .header-subtitle {
-        font-size: 0.85rem;
-        color: var(--text-muted);
-        font-weight: 500;
-        border-left: 1px solid #e2e8f0;
-        padding-left: 12px;
-      }
-
-      .header-actions {
-        display: flex;
-        gap: 12px;
-      }
-
-      .workspace {
-        flex: 1;
-        display: flex;
         justify-content: center;
-        align-items: center;
-        padding: 30px;
-        width: 100%;
-        height: calc(100vh - 75px);
-        box-sizing: border-box;
+        padding: 32px 20px;
       }
 
-      .preview-wrapper {
+      .container {
+        width: 100%;
+      }
+
+      .card {
         position: relative;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        background-color: white;
-        border-radius: 8px;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        max-width: 100%;
-        max-height: 100%;
-        border: 1px solid #e2e8f0;
+        background: var(--bg-card);
+        border-radius: 20px;
+        padding: 48px;
+        border: 1px solid var(--border);
+        box-shadow: 0 0 60px rgba(240, 180, 41, 0.06);
+        max-width: 520px;
+        margin: 0 auto;
       }
 
-      #certImage {
-        display: block;
-        max-width: 100%;
-        max-height: calc(100vh - 135px);
-        object-fit: contain;
-      }
-
-      #nameOverlay {
+      .card::before {
+        content: "";
         position: absolute;
-        font-family: "Pinyon Script", cursive;
-        color: #000000;
-        white-space: nowrap;
-        pointer-events: none;
-        transform: translate(-50%, -50%);
-        transform-origin: center center;
-        text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
-      }
-
-      /* --- SCREEN 3: Success Modal --- */
-      #successModal {
-        display: none;
-        position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        bottom: 0;
-        background: rgba(15, 23, 42, 0.4);
-        backdrop-filter: blur(5px);
-        z-index: 1000;
-        justify-content: center;
-        align-items: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        height: 3px;
+        border-radius: 20px 20px 0 0;
+        background: linear-gradient(90deg, #f0b429, #e09000);
       }
 
-      .modal-content {
-        background: white;
-        padding: 50px 40px;
-        border-radius: 24px;
-        text-align: center;
-        max-width: 450px;
-        width: 90%;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        transform: translateY(20px);
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      .card-dashboard {
+        max-width: 720px;
       }
 
-      .success-icon {
-        width: 80px;
-        height: 80px;
-        background: #dcfce7;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0 auto 25px;
-        color: #16a34a;
+      .card-admin-login,
+      .card-home {
+        max-width: 520px;
       }
 
-      .success-icon svg {
-        width: 40px;
-        height: 40px;
-      }
-
-      .modal-content h2 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--text-main);
-        margin: 0 0 15px 0;
-      }
-
-      .modal-content p {
-        color: var(--text-muted);
-        font-size: 1.05rem;
-        line-height: 1.6;
-        margin: 0 0 30px 0;
-        padding: 0 10px;
-      }
-
-      /* --- Buttons --- */
-      .btn {
-        padding: 14px 28px;
-        border: none;
-        border-radius: 12px;
-        font-size: 1.05rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      .brand {
         display: inline-flex;
         align-items: center;
-        justify-content: center;
         gap: 10px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--accent-gold);
+        color: var(--accent-gold);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+      }
+
+      .title {
+        margin: 18px 0 10px;
+        font-size: 2.4rem;
+        font-family: "Playfair Display", serif;
+        color: var(--text-primary);
+        font-weight: 600;
+      }
+
+      .subtitle {
+        margin: 0 0 28px;
+        color: var(--text-muted);
+        line-height: 1.6;
+        font-size: 0.98rem;
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      label {
+        font-weight: 600;
+        font-size: 0.72rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        display: block;
+        color: var(--text-muted);
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        font-size: 1rem;
+        background: #0a0a0f;
+        color: var(--text-primary);
+        transition:
+          border 0.2s ease,
+          box-shadow 0.2s ease;
         font-family: inherit;
       }
 
-      .btn-primary {
-        background: linear-gradient(
-          135deg,
-          var(--primary),
-          var(--primary-hover)
-        );
-        color: white;
+      input::placeholder {
+        color: var(--text-muted);
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--accent-gold);
+        box-shadow: 0 0 0 3px var(--glow);
+      }
+
+      .btn {
+        border: none;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn-full {
         width: 100%;
-        box-shadow: 0 4px 14px 0 rgba(88, 28, 135, 0.25);
       }
 
-      .header-actions .btn-primary {
-        width: auto;
-        padding: 10px 20px;
-        font-size: 0.95rem;
-        border-radius: 8px;
+      .btn-primary {
+        background: linear-gradient(135deg, #f0b429, #e09000);
+        color: #0a0a0f;
+        box-shadow: 0 10px 24px rgba(240, 180, 41, 0.2);
       }
 
-      .btn-primary:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px 0 rgba(88, 28, 135, 0.4);
+      .btn-primary:hover {
+        transform: scale(1.02);
+        box-shadow: 0 12px 30px rgba(240, 180, 41, 0.35);
+      }
+
+      .btn-primary:active {
+        transform: scale(0.98);
       }
 
       .btn-secondary {
-        background-color: white;
-        color: var(--text-main);
-        border: 2px solid #e2e8f0;
+        background: transparent;
+        color: var(--accent-gold);
+        border: 1px solid var(--accent-gold);
       }
 
-      .header-actions .btn-secondary {
-        padding: 10px 20px;
-        font-size: 0.95rem;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
+      .btn-secondary:hover {
+        box-shadow: 0 0 18px rgba(240, 180, 41, 0.25);
       }
 
-      .btn-secondary:hover:not(:disabled) {
-        background-color: #f8fafc;
-        border-color: #cbd5e1;
-      }
-
-      .btn:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-        transform: none !important;
-        box-shadow: none !important;
-      }
-
-      /* --- Loading Spinner --- */
-      .loader {
+      .error {
+        color: #fca5a5;
+        font-size: 0.9rem;
+        font-weight: 600;
         display: none;
-        width: 18px;
-        height: 18px;
-        border: 2.5px solid rgba(255, 255, 255, 0.3);
-        border-bottom-color: #ffffff;
-        border-radius: 50%;
-        animation: rotation 1s linear infinite;
+        background: rgba(127, 29, 29, 0.35);
+        padding: 10px 12px;
+        border-left: 3px solid var(--danger);
+        border-radius: 8px;
       }
 
-      @keyframes rotation {
-        0% {
-          transform: rotate(0deg);
-        }
+      .link-btn {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        cursor: pointer;
+        padding: 0;
+      }
 
-        100% {
-          transform: rotate(360deg);
+      .link-btn:hover {
+        color: var(--accent-gold);
+      }
+
+      .preview-area {
+        margin-top: 24px;
+        display: none;
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+        background: var(--bg-elevated);
+        padding: 20px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+      }
+
+      .preview-img {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid rgba(240, 180, 41, 0.4);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+      }
+
+      .footer-link {
+        margin-top: 26px;
+        text-align: center;
+      }
+
+      .screen {
+        display: none;
+        opacity: 0;
+        transform: translateY(10px);
+        transition:
+          opacity 0.3s ease,
+          transform 0.3s ease;
+      }
+
+      .screen.active {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .admin-bar {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 18px 22px;
+        margin-bottom: 28px;
+      }
+
+      .admin-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .admin-title {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .admin-title .logo-text {
+        font-family: "Playfair Display", serif;
+        font-size: 1.4rem;
+        color: var(--text-primary);
+      }
+
+      .admin-title .dashboard-subtitle {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      .dashboard-grid {
+        display: grid;
+        gap: 18px;
+      }
+
+      .type-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .type-btn {
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--bg-elevated);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      #adminDashboard .type-btn {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      #adminDashboard.screen.active .type-btn {
+        animation: typeFade 0.35s ease forwards;
+      }
+
+      #adminDashboard.screen.active .type-btn:nth-child(1) {
+        animation-delay: 0.05s;
+      }
+
+      #adminDashboard.screen.active .type-btn:nth-child(2) {
+        animation-delay: 0.1s;
+      }
+
+      #adminDashboard.screen.active .type-btn:nth-child(3) {
+        animation-delay: 0.15s;
+      }
+
+      #adminDashboard.screen.active .type-btn:nth-child(4) {
+        animation-delay: 0.2s;
+      }
+
+      #adminDashboard.screen.active .type-btn:nth-child(5) {
+        animation-delay: 0.25s;
+      }
+
+      #adminDashboard.screen.active .type-btn:nth-child(6) {
+        animation-delay: 0.3s;
+      }
+
+      #adminDashboard.screen.active .type-btn:nth-child(7) {
+        animation-delay: 0.35s;
+      }
+
+      #adminDashboard.screen.active .type-btn:nth-child(8) {
+        animation-delay: 0.4s;
+      }
+
+      .type-btn::before {
+        font-size: 1.1rem;
+      }
+
+      .type-btn[data-type="winner"]::before {
+        content: "🏆";
+      }
+
+      .type-btn[data-type="runner"]::before {
+        content: "🥈";
+      }
+
+      .type-btn[data-type="secondrunner"]::before {
+        content: "🥉";
+      }
+
+      .type-btn[data-type="bestinnovation"]::before {
+        content: "💡";
+      }
+
+      .type-btn[data-type="coordinator"]::before {
+        content: "📋";
+      }
+
+      .type-btn[data-type="panelist"]::before {
+        content: "🎤";
+      }
+
+      .type-btn[data-type="judge"]::before {
+        content: "⚖️";
+      }
+
+      .type-btn[data-type="mentor"]::before {
+        content: "🎓";
+      }
+
+      .type-btn:hover {
+        border-color: var(--accent-gold);
+        transform: translateY(-2px);
+      }
+
+      .type-btn.active {
+        background: linear-gradient(135deg, #f0b429, #e09000);
+        border-color: transparent;
+        color: #0a0a0f;
+        box-shadow: 0 12px 28px rgba(240, 180, 41, 0.35);
+      }
+
+      #adminStep3 {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-6px);
+        transition: all 0.25s ease;
+      }
+
+      #adminStep3[style*="display: block"] {
+        max-height: 240px;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .step-label {
+        color: var(--accent-gold);
+        font-weight: 600;
+      }
+
+      .lock-icon {
+        font-size: 2rem;
+        color: var(--accent-gold);
+        text-align: center;
+        margin-bottom: 8px;
+      }
+
+      .hidden-canvas {
+        display: none;
+      }
+
+      @keyframes typeFade {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
       }
 
-      /* --- Mobile Responsiveness --- */
-      @media (max-width: 600px) {
-        #loginScreen {
-          padding: 30px 20px;
-          margin: 0;
-          border-radius: 0;
-          min-height: 100vh;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
+      @media (max-width: 900px) {
+        .card-dashboard {
           max-width: 100%;
-          border: none;
         }
 
-        #adminScreen {
-          padding: 30px 20px;
-          margin: 0;
-          border-radius: 0;
-          min-height: 100vh;
-          display: none;
-          flex-direction: column;
-          justify-content: center;
-          max-width: 100%;
-          border: none;
+        .type-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 720px) {
+        body {
+          padding: 16px;
         }
 
-        .header {
-          padding: 10px 15px;
-          flex-wrap: wrap;
-          gap: 10px;
-          height: auto;
+        .card {
+          padding: 32px 24px;
         }
 
-        .header-title-area {
-          width: 100%;
-          justify-content: space-between;
-          margin-bottom: 5px;
-        }
-
-        .header-subtitle {
-          border-left: none;
-          padding-left: 0;
-          font-size: 0.8rem;
-        }
-
-        .header-actions {
-          width: 100%;
-          justify-content: space-between;
-        }
-
-        .header-actions .btn {
-          flex: 1;
-          font-size: 0.85rem;
-          padding: 8px 10px;
-        }
-
-        .workspace {
-          padding: 10px;
-          height: auto;
-          min-height: calc(100vh - 100px);
-        }
-
-        #certImage {
-          max-height: calc(100vh - 140px);
-        }
-
-        .modal-content {
-          padding: 30px 20px;
+        .title {
+          font-size: 2rem;
         }
       }
     </style>
   </head>
-
   <body>
-    <!-- Ambient Background Shapes -->
-    <div class="bg-shape shape-1"></div>
-    <div class="bg-shape shape-2"></div>
-
-    <!-- SCREEN 1: Input Form -->
-    <div id="loginScreen">
-      <span class="event-badge">Official Certificate</span>
-      <h1>Claim Your Certificate</h1>
-      <p>
-        Enter your name exactly as you'd like it to appear on your official
-        certificate, brought to you by <strong>BIRDS Club</strong>.
-      </p>
-
-      <form id="nameForm">
-        <div class="input-group">
-          <label for="studentNameInput">Full Name</label>
-          <input
-            type="text"
-            id="studentNameInput"
-            placeholder="e.g. Siddi"
-            required
-            autocomplete="name"
-          />
-        </div>
-        <button type="submit" class="btn btn-primary">
-          Preview Certificate
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </button>
-      </form>
-
-      <div class="section-divider">Portal</div>
-      <button
-        type="button"
-        class="btn btn-secondary"
-        id="openAdminScreenBtn"
-        style="width: 100%"
-      >
-        Go To Admin
-      </button>
+    <div style="text-align: center; margin-bottom: 2rem">
+      <img
+        src="Logo.png"
+        alt="AI4DRUGFREE Logo"
+        style="max-width: clamp(200px, 40vw, 400px); height: auto"
+      />
     </div>
-
-    <!-- SCREEN 1B: Admin Page -->
-    <div id="adminScreen">
-      <span class="event-badge">BIRDS Club Admin</span>
-      <h1>Admin Portal</h1>
-      <p>Login to generate Runner and Winner certificates.</p>
-
-      <div class="admin-login-wrap" id="adminLoginWrap">
-        <h3>Admin Login</h3>
-        <form id="adminLoginForm">
-          <div class="input-group">
-            <label for="adminUsernameInput">Username</label>
-            <input
-              type="text"
-              id="adminUsernameInput"
-              placeholder="Admin username"
-              required
-              autocomplete="username"
-            />
+    <div class="container">
+      <!-- STUDENT HOME SCREEN -->
+      <section id="studentScreen" class="screen active">
+        <div class="card card-home">
+          <div class="card-header">
+            <span class="brand">brought to u by BIRDS CLUB</span>
+            <h1 class="title">Claim Your Certificate</h1>
+            <p class="subtitle">
+              Select your event, enter your full name, and submit your access
+              code to download a participation certificate.
+            </p>
           </div>
-          <div class="input-group">
-            <label for="adminPasswordInput">Password</label>
-            <input
-              type="password"
-              id="adminPasswordInput"
-              placeholder="Password"
-              required
-              autocomplete="current-password"
-            />
-          </div>
-          <div class="admin-error" id="adminErrorMsg">
-            Invalid username or password.
-          </div>
-          <button type="submit" class="btn btn-secondary" style="width: 100%">
-            Login as Admin
-          </button>
-        </form>
-      </div>
 
-      <div class="admin-panel" id="adminPanel">
-        <h3>Admin Certificate Generator</h3>
-        <p>Select certificate type, enter participant name, and preview.</p>
+          <form id="studentForm" class="form-grid">
+            <div>
+              <label for="studentEventSelect">Select Event</label>
+              <select id="studentEventSelect" required></select>
+            </div>
+            <div>
+              <label for="studentNameInput">Full Name</label>
+              <input
+                id="studentNameInput"
+                type="text"
+                placeholder="e.g. Alex Patel"
+                required
+                autocomplete="name"
+              />
+            </div>
+            <div>
+              <label for="studentCodeInput">Access Code</label>
+              <input
+                id="studentCodeInput"
+                type="password"
+                placeholder="Enter event access code"
+                required
+                autocomplete="one-time-code"
+              />
+            </div>
+            <span class="error" id="studentError">
+              Invalid access code. Please check with your event coordinator.
+            </span>
+            <button type="submit" class="btn btn-primary btn-full">
+              Generate Participation Certificate
+            </button>
+          </form>
 
-        <div class="choice-grid">
-          <button id="runnerTypeBtn" type="button" class="choice-btn">
-            Runner
-          </button>
-          <button id="winnerTypeBtn" type="button" class="choice-btn">
-            Winner
-          </button>
+          <div id="studentPreview" class="preview-area">
+            <img id="studentPreviewImg" class="preview-img" alt="Certificate" />
+            <button id="studentDownloadBtn" class="btn btn-primary btn-full">
+              Download Certificate
+            </button>
+          </div>
+
+          <div class="footer-link">
+            <button id="openAdminBtn" class="link-btn" type="button">
+              Admin Portal
+            </button>
+          </div>
         </div>
+      </section>
 
-        <form id="adminNameForm">
-          <div class="input-group" style="margin-bottom: 16px">
-            <label for="adminStudentNameInput">Full Name</label>
-            <input
-              type="text"
-              id="adminStudentNameInput"
-              placeholder="e.g. Alex"
-              required
-              autocomplete="name"
-            />
-          </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%">
-            Preview Selected Certificate
-          </button>
-        </form>
-      </div>
+      <!-- ADMIN LOGIN SCREEN -->
+      <section id="adminLoginScreen" class="screen">
+        <div class="card card-admin-login">
+          <div class="lock-icon">🔒</div>
+          <span class="brand">brought to u by BIRDS CLUB</span>
+          <h1 class="title">Admin Portal</h1>
+          <p class="subtitle">BIRDS Club Internal Access</p>
 
-      <div class="section-divider">Navigation</div>
-      <button
-        type="button"
-        class="btn btn-secondary"
-        id="backToUserBtn"
-        style="width: 100%"
-      >
-        Back To User Page
-      </button>
-    </div>
-
-    <!-- SCREEN 2: Generator View -->
-    <div id="generatorScreen">
-      <header class="header">
-        <div class="header-title-area">
-          <h1 class="header-title">BIRDS Club</h1>
-          <span class="header-subtitle" id="certTypeLabel">Participation</span>
-        </div>
-        <div class="header-actions">
-          <button id="backBtn" class="btn btn-secondary">Back</button>
-          <button id="downloadBtn" class="btn btn-primary">
-            <span class="loader" id="btnLoader"></span>
-            <span id="btnText">Download JPG</span>
-            <svg
-              id="downloadIcon"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+          <form id="adminLoginForm" class="form-grid">
+            <div>
+              <label for="adminUserInput">Username</label>
+              <input
+                id="adminUserInput"
+                type="text"
+                placeholder="Admin username"
+                required
+                autocomplete="username"
+              />
+            </div>
+            <div>
+              <label for="adminPassInput">Password</label>
+              <input
+                id="adminPassInput"
+                type="password"
+                placeholder="Password"
+                required
+                autocomplete="current-password"
+              />
+            </div>
+            <span class="error" id="adminError">
+              Invalid username or password.
+            </span>
+            <button type="submit" class="btn btn-primary btn-full">
+              Login
+            </button>
+            <button
+              id="adminBackBtn"
+              type="button"
+              class="btn btn-secondary btn-full"
             >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-          </button>
+              Back to Home
+            </button>
+          </form>
         </div>
-      </header>
+      </section>
 
-      <main class="workspace">
-        <div class="preview-wrapper" id="previewWrapper">
-          <img
-            id="certImage"
-            src="Certs/Participation_Certificate.jpg"
-            alt="Certificate Background"
-          />
-          <div id="nameOverlay"></div>
+      <!-- ADMIN DASHBOARD -->
+      <section id="adminDashboard" class="screen">
+        <div class="card card-dashboard">
+          <div class="admin-bar">
+            <div class="admin-header">
+              <div class="admin-title">
+                <div class="logo-text">BIRDS Club</div>
+                <div class="dashboard-subtitle">Admin Dashboard</div>
+              </div>
+              <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <div>
+              <label for="adminEventSelect">Step 1: Select Event</label>
+              <select id="adminEventSelect" required></select>
+            </div>
+
+            <div>
+              <label>Step 2: Select Certificate Type</label>
+              <div class="type-grid" id="certTypeGrid"></div>
+            </div>
+
+            <div id="adminStep3" style="display: none">
+              <label id="adminStepLabel" class="step-label">Step 3</label>
+              <div class="form-grid" style="margin-top: 12px">
+                <div>
+                  <label for="adminNameInput">Enter Full Name</label>
+                  <input
+                    id="adminNameInput"
+                    type="text"
+                    placeholder="e.g. Jordan Lee"
+                    autocomplete="name"
+                  />
+                </div>
+                <button
+                  id="adminGenerateBtn"
+                  class="btn btn-primary btn-full"
+                  type="button"
+                >
+                  Generate Certificate
+                </button>
+              </div>
+            </div>
+
+            <div id="adminPreview" class="preview-area">
+              <img id="adminPreviewImg" class="preview-img" alt="Certificate" />
+              <button id="adminDownloadBtn" class="btn btn-primary btn-full">
+                Download Certificate
+              </button>
+            </div>
+          </div>
         </div>
-      </main>
+      </section>
     </div>
 
-    <!-- SCREEN 3: Success Modal -->
-    <div id="successModal">
-      <div class="modal-content">
-        <div class="success-icon">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="3"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </div>
-        <h2>Got your Certificate!</h2>
-        <p>
-          Your certificate is ready and downloaded. Thank you for your
-          participation and for being part of
-          <strong>BIRDS Club</strong> events.
-        </p>
-        <button id="closeModalBtn" class="btn btn-primary">Return Home</button>
-      </div>
-    </div>
+    <!-- Hidden Canvas -->
+    <canvas id="certCanvas" class="hidden-canvas"></canvas>
 
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // DOM Elements
-        const loginScreen = document.getElementById("loginScreen");
-        const adminScreen = document.getElementById("adminScreen");
-        const generatorScreen = document.getElementById("generatorScreen");
-        const successModal = document.getElementById("successModal");
-        const certTypeLabel = document.getElementById("certTypeLabel");
+      // ==========================
+      // TODO: Update event display names here
+      // ==========================
+      const EVENTS = [
+        { id: "event1", name: "Angels vs Devils" },
+        { id: "event2", name: "TalkBot Arena" },
+        { id: "event3", name: "AI Meme Warfare" },
+        { id: "event4", name: "Prompt Engineering Battle" },
+        { id: "event5", name: "AI on Trial (AI Debate)" },
+        { id: "event6", name: "BeatMind (AI Music Fusion)" },
+        { id: "event7", name: "Kick the Habit - AI Short Film Challenge" },
+        { id: "event8", name: "Research Poster" },
+        { id: "event9", name: "Hack4Change Hackathon" },
+      ];
 
-        const nameForm = document.getElementById("nameForm");
-        const studentNameInput = document.getElementById("studentNameInput");
-        const openAdminScreenBtn =
-          document.getElementById("openAdminScreenBtn");
-        const backToUserBtn = document.getElementById("backToUserBtn");
+      // ==========================
+      // TODO: Update access codes here
+      // ==========================
+      const EVENT_CODES = {
+        event1: "AVD2025",
+        event2: "TBA2025",
+        event3: "MEME2025",
+        event4: "PROMPT2025",
+        event5: "DEBATE2025",
+        event6: "BEAT2025",
+        event7: "FILM2025",
+        event8: "POSTER2025",
+        event9: "HACK2025",
+      };
 
-        const adminLoginWrap = document.getElementById("adminLoginWrap");
-        const adminLoginForm = document.getElementById("adminLoginForm");
-        const adminUsernameInput =
-          document.getElementById("adminUsernameInput");
-        const adminPasswordInput =
-          document.getElementById("adminPasswordInput");
-        const adminErrorMsg = document.getElementById("adminErrorMsg");
+      // ==========================
+      // TODO: Update participation certificate images here
+      // ==========================
+      const PARTICIPATION_IMAGE_MAP = {
+        event1: "Certs/part/Angels vs Devils.jpg",
+        event2: "Certs/part/TalkBot Arena.jpg",
+        event3: "Certs/part/AI Meme Warfare.jpg",
+        event4: "Certs/part/Prompt Engineering Battle.jpg",
+        event5: "Certs/part/AI on Trial.jpg",
+        event6: "Certs/part/BeatMind_ AI Music Fusion.jpg",
+        event7: "Certs/part/Kick the Habit_ AI Short Film Challenge.jpg",
+        event8: "Certs/part/Research Poster Presentation.jpg",
+        event9: "Certs/part/Hack4Change Hackathon.jpg",
+      };
 
-        const adminPanel = document.getElementById("adminPanel");
-        const runnerTypeBtn = document.getElementById("runnerTypeBtn");
-        const winnerTypeBtn = document.getElementById("winnerTypeBtn");
-        const adminNameForm = document.getElementById("adminNameForm");
-        const adminStudentNameInput = document.getElementById(
-          "adminStudentNameInput",
-        );
+      // ==========================
+      // TODO: Update admin credentials here
+      // ==========================
+      const ADMIN_USER = "admin";
+      const ADMIN_PASS = "birds2025";
 
-        const certImage = document.getElementById("certImage");
-        const nameOverlay = document.getElementById("nameOverlay");
-
-        const backBtn = document.getElementById("backBtn");
-        const downloadBtn = document.getElementById("downloadBtn");
-        const downloadIcon = document.getElementById("downloadIcon");
-        const btnLoader = document.getElementById("btnLoader");
-        const btnText = document.getElementById("btnText");
-
-        const closeModalBtn = document.getElementById("closeModalBtn");
-
-        // State
-        let studentName = "";
-        let selectedCertType = "participation";
-        let isAdminMode = false;
-        const detectedLineLayoutByImage = {};
-
-        const ADMIN_CREDENTIALS = {
-          username: "birdscanfly",
-          password: "birds123",
-        };
-
-        const CERT_CONFIGS = {
+      // ==========================
+      // TODO: Update certificate placement values here
+      // ==========================
+      const CERT_CONFIG = {
+        event1: {
           participation: {
-            label: "Participation",
-            image: "Certs/Participation_Certificate.jpg",
-            fontFamily: '"Anastasia Script", "Pinyon Script", cursive',
-            xPosPercent: 0.585,
-            yPosPercent: 0.565,
-            maxWidthPercent: 0.6,
-            fontSizePercent: 0.105,
-            textBaseline: "bottom",
-            transformY: "-100%",
-          },
-          runner: {
-            label: "Runner",
-            image: "Certs/Runner.jpg",
-            fontFamily: '"Symphony", "Times New Roman", serif',
-            xPosPercent: 0.5,
-            yPosPercent: 0.53,
-            maxWidthPercent: 0.78,
-            fontSizePercent: 0.12,
-            textBaseline: "middle",
-            transformY: "-50%",
+            x: 50,
+            y: 50,
+            fontSize: 350,
+            fontColor: "#d4af37",
+            fontFamily: "Pinyon Script",
           },
           winner: {
-            label: "Winner",
-            image: "Certs/Winner.jpg",
-            fontFamily: '"Symphony", "Times New Roman", serif',
-            xPosPercent: 0.5,
-            yPosPercent: 0.53,
-            maxWidthPercent: 0.78,
-            fontSizePercent: 0.12,
-            textBaseline: "middle",
-            transformY: "-50%",
+            x: 50,
+            y: 50,
+            fontSize: 350,
+            fontColor: "#5c3a21",
+            fontFamily: "Pinyon Script",
           },
-        };
+          runner: {
+            x: 50,
+            y: 50,
+            fontSize: 350,
+            fontColor: "#5c3a21",
+            fontFamily: "Pinyon Script",
+          },
+          secondrunner: {
+            x: 50,
+            y: 50,
+            fontSize: 350,
+            fontColor: "#5c3a21",
+            fontFamily: "Pinyon Script",
+          },
+          coordinator: {
+            x: 50,
+            y: 50,
+            fontSize: 350,
+            fontColor: "#d4af37",
+            fontFamily: "Pinyon Script",
+          },
+          panelist: {
+            x: 50,
+            y: 50,
+            fontSize: 350,
+            fontColor: "#d4af37",
+            fontFamily: "Pinyon Script",
+          },
+          judge: {
+            x: 50,
+            y: 50,
+            fontSize: 350,
+            fontColor: "#d4af37",
+            fontFamily: "Pinyon Script",
+          },
+          mentor: {
+            x: 50,
+            y: 50,
+            fontSize: 350,
+            fontColor: "#d4af37",
+            fontFamily: "Pinyon Script",
+          },
+          bestinnovation: {
+            x: 50,
+            y: 50,
+            fontSize: 350,
+            fontColor: "#d4af37",
+            fontFamily: "Pinyon Script",
+          },
+        },
+        event2: {},
+        event3: {},
+        event4: {},
+        event5: {},
+        event6: {},
+        event7: {},
+        event8: {},
+        event9: {},
+      };
 
-        function getCurrentConfig() {
-          return CERT_CONFIGS[selectedCertType];
+      // ==========================
+      // TODO: Copy event1 settings into event2-event9
+      // ==========================
+      [
+        "event2",
+        "event3",
+        "event4",
+        "event5",
+        "event6",
+        "event7",
+        "event8",
+        "event9",
+      ].forEach((eventId) => {
+        CERT_CONFIG[eventId] = JSON.parse(JSON.stringify(CERT_CONFIG.event1));
+      });
+
+      // ==========================
+      // CERTIFICATE TYPES
+      // ==========================
+      const CERT_TYPES = [
+        { key: "winner", label: "Winner" },
+        { key: "runner", label: "Runner Up" },
+        { key: "secondrunner", label: "2nd Runner Up" },
+        { key: "bestinnovation", label: "Best Innovation" },
+        { key: "coordinator", label: "Coordinator" },
+        { key: "judge", label: "Judge" },
+        { key: "mentor", label: "Mentor" },
+      ];
+
+      const CERT_HIDDEN_CODES = {
+        event1: {
+          winner: "1",
+          runner: "2",
+        },
+        event2: {
+          winner: "5",
+          runner: "6",
+        },
+        event3: {
+          winner: "3",
+          runner: "4",
+        },
+        event4: {
+          winner: "7",
+          runner: "8",
+        },
+        event5: {
+          winner: "9",
+          runner: "10",
+        },
+        event6: {
+          winner: "11",
+          runner: "12",
+        },
+        event7: {
+          winner: "13",
+          runner: "14",
+        },
+        event8: {
+          winner: "15",
+          runner: "16",
+        },
+        event9: {
+          winner: "17",
+          runner: "18",
+          secondrunner: "19",
+          bestinnovation: "20",
+        },
+      };
+
+      // ==========================
+      // DOM REFERENCES
+      // ==========================
+      const studentScreen = document.getElementById("studentScreen");
+      const adminLoginScreen = document.getElementById("adminLoginScreen");
+      const adminDashboard = document.getElementById("adminDashboard");
+
+      const studentForm = document.getElementById("studentForm");
+      const studentEventSelect = document.getElementById("studentEventSelect");
+      const studentNameInput = document.getElementById("studentNameInput");
+      const studentCodeInput = document.getElementById("studentCodeInput");
+      const studentError = document.getElementById("studentError");
+      const studentPreview = document.getElementById("studentPreview");
+      const studentPreviewImg = document.getElementById("studentPreviewImg");
+      const studentDownloadBtn = document.getElementById("studentDownloadBtn");
+      const openAdminBtn = document.getElementById("openAdminBtn");
+
+      const adminLoginForm = document.getElementById("adminLoginForm");
+      const adminUserInput = document.getElementById("adminUserInput");
+      const adminPassInput = document.getElementById("adminPassInput");
+      const adminError = document.getElementById("adminError");
+      const adminBackBtn = document.getElementById("adminBackBtn");
+
+      const adminEventSelect = document.getElementById("adminEventSelect");
+      const certTypeGrid = document.getElementById("certTypeGrid");
+      const adminStep3 = document.getElementById("adminStep3");
+      const adminStepLabel = document.getElementById("adminStepLabel");
+      const adminNameInput = document.getElementById("adminNameInput");
+      const adminGenerateBtn = document.getElementById("adminGenerateBtn");
+      const adminPreview = document.getElementById("adminPreview");
+      const adminPreviewImg = document.getElementById("adminPreviewImg");
+      const adminDownloadBtn = document.getElementById("adminDownloadBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      const certCanvas = document.getElementById("certCanvas");
+
+      // ==========================
+      // STATE
+      // ==========================
+      let studentDownloadUrl = "";
+      let adminDownloadUrl = "";
+      let selectedAdminType = "";
+      let selectedAdminHiddenCode = "";
+
+      // ==========================
+      // UI HELPERS
+      // ==========================
+      function showScreen(screen) {
+        [studentScreen, adminLoginScreen, adminDashboard].forEach((el) => {
+          el.classList.remove("active");
+        });
+        screen.classList.add("active");
+      }
+
+      function resetStudentPreview() {
+        studentPreview.style.display = "none";
+        studentPreviewImg.src = "";
+        studentDownloadUrl = "";
+      }
+
+      function resetAdminPreview() {
+        adminPreview.style.display = "none";
+        adminPreviewImg.src = "";
+        adminDownloadUrl = "";
+      }
+
+      function sanitizeFilename(value) {
+        return value.trim().replace(/[^a-zA-Z0-9]+/g, "_");
+      }
+
+      // ==========================
+      // POPULATE EVENT DROPDOWNS
+      // ==========================
+      function populateEvents(selectEl) {
+        selectEl.innerHTML = "";
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "Select an event";
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        selectEl.appendChild(placeholder);
+
+        EVENTS.forEach((event) => {
+          const option = document.createElement("option");
+          option.value = event.id;
+          option.textContent = event.name;
+          selectEl.appendChild(option);
+        });
+      }
+
+      populateEvents(studentEventSelect);
+      populateEvents(adminEventSelect);
+
+      // ==========================
+      // BUILD CERT TYPE BUTTONS
+      // ==========================
+      CERT_TYPES.forEach((type) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "type-btn";
+        button.textContent = type.label;
+        button.dataset.type = type.key;
+        certTypeGrid.appendChild(button);
+      });
+
+      function getHiddenCode(eventId, certType) {
+        return CERT_HIDDEN_CODES[eventId]?.[certType] || "";
+      }
+
+      // ==========================
+      // CANVAS RENDERING
+      // ==========================
+      async function renderCertificate({
+        eventId,
+        certType,
+        name,
+        previewImg,
+        onRendered,
+      }) {
+        const config = CERT_CONFIG[eventId]?.[certType];
+        if (!config) {
+          return;
         }
 
-        function getResolvedConfig(renderWidth, renderHeight) {
-          return getCurrentConfig();
+        const hiddenCode = getHiddenCode(eventId, certType);
+        const imagePath =
+          certType === "participation"
+            ? PARTICIPATION_IMAGE_MAP[eventId]
+            : certType === "coordinator"
+              ? hiddenCode
+                ? `Certs/coor/${hiddenCode}.jpg`
+                : `Certs/coor/${eventId}.jpg`
+              : hiddenCode
+                ? `Certs/wine/${hiddenCode}.jpg`
+                : `Certs/${eventId}_${certType}.jpg`;
+        if (!imagePath) {
+          return;
         }
+        const img = new Image();
+        img.src = encodeURI(imagePath);
 
-        function updateCertTypeButtons() {
-          runnerTypeBtn.classList.toggle(
-            "active",
-            selectedCertType === "runner",
+        await img.decode();
+        await document.fonts.load(
+          `${config.fontSize}px "${config.fontFamily}"`,
+        );
+
+        certCanvas.width = img.naturalWidth;
+        certCanvas.height = img.naturalHeight;
+
+        const ctx = certCanvas.getContext("2d");
+        ctx.clearRect(0, 0, certCanvas.width, certCanvas.height);
+        ctx.drawImage(img, 0, 0, certCanvas.width, certCanvas.height);
+
+        try {
+          const centerLogo = new Image();
+          centerLogo.src = encodeURI("Logo.png");
+          await centerLogo.decode();
+
+          const logoWidth = certCanvas.width * 0.24;
+          const logoHeight =
+            (logoWidth * centerLogo.naturalHeight) / centerLogo.naturalWidth;
+          const logoX = (certCanvas.width - logoWidth) / 2;
+          const logoY = certCanvas.height * 0.26 - logoHeight / 2;
+
+          ctx.save();
+          ctx.fillStyle = "rgba(92, 58, 33, 0.14)";
+          ctx.strokeStyle = "rgba(212, 175, 55, 0.55)";
+          ctx.lineWidth = Math.max(4, certCanvas.width * 0.002);
+          ctx.beginPath();
+          ctx.ellipse(
+            certCanvas.width / 2,
+            certCanvas.height * 0.275,
+            logoWidth * 0.62,
+            logoHeight * 0.62,
+            0,
+            0,
+            Math.PI * 2,
           );
-          winnerTypeBtn.classList.toggle(
-            "active",
-            selectedCertType === "winner",
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.drawImage(centerLogo, logoX, logoY, logoWidth, logoHeight);
+          ctx.restore();
+        } catch {
+          // If the logo is missing or fails to decode, keep certificate generation working.
+        }
+
+        const x = (config.x / 100) * certCanvas.width;
+        const y = (config.y / 100) * certCanvas.height;
+        ctx.fillStyle = config.fontColor;
+        ctx.textAlign = config.textAlign || "center";
+        ctx.textBaseline = config.textBaseline || "middle";
+
+        // Dynamic text scaling based on max width
+        const maxWidth = certCanvas.width * (config.maxWidthPercent || 0.6);
+        let currentFontSize = config.fontSize;
+        ctx.font = `${currentFontSize}px "${config.fontFamily}"`;
+        let textWidth = ctx.measureText(name).width;
+
+        if (textWidth > maxWidth) {
+          const scaleFactor = maxWidth / textWidth;
+          currentFontSize = Math.floor(currentFontSize * scaleFactor);
+          ctx.font = `${currentFontSize}px "${config.fontFamily}"`;
+        }
+
+        ctx.fillText(name, x, y);
+
+        const dataUrl = certCanvas.toDataURL("image/jpeg", 0.95);
+        previewImg.src = dataUrl;
+        onRendered(dataUrl);
+      }
+
+      // ==========================
+      // STUDENT FLOW
+      // ==========================
+      studentForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        studentError.style.display = "none";
+        resetStudentPreview();
+
+        const eventId = studentEventSelect.value;
+        const name = studentNameInput.value.trim();
+        const code = studentCodeInput.value.trim();
+
+        if (!eventId || !name) {
+          return;
+        }
+
+        if (EVENT_CODES[eventId] !== code) {
+          studentError.style.display = "block";
+          return;
+        }
+
+        await renderCertificate({
+          eventId,
+          certType: "participation",
+          name,
+          previewImg: studentPreviewImg,
+          onRendered: (dataUrl) => {
+            studentDownloadUrl = dataUrl;
+            studentPreview.style.display = "flex";
+          },
+        });
+      });
+
+      studentDownloadBtn.addEventListener("click", () => {
+        if (!studentDownloadUrl) return;
+        const eventId = studentEventSelect.value;
+        const eventName =
+          EVENTS.find((event) => event.id === eventId)?.name || eventId;
+        const name = sanitizeFilename(studentNameInput.value);
+        const fileName = `${name}_${sanitizeFilename(eventName)}_Participation.jpg`;
+        const link = document.createElement("a");
+        link.href = studentDownloadUrl;
+        link.download = fileName;
+        link.click();
+      });
+
+      studentEventSelect.addEventListener("change", () => {
+        studentError.style.display = "none";
+        resetStudentPreview();
+      });
+
+      studentCodeInput.addEventListener("input", () => {
+        studentError.style.display = "none";
+      });
+
+      // ==========================
+      // ADMIN LOGIN FLOW
+      // ==========================
+      openAdminBtn.addEventListener("click", () => {
+        adminLoginForm.reset();
+        adminError.style.display = "none";
+        showScreen(adminLoginScreen);
+      });
+
+      adminBackBtn.addEventListener("click", () => {
+        showScreen(studentScreen);
+      });
+
+      adminLoginForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        adminError.style.display = "none";
+
+        const username = adminUserInput.value.trim();
+        const password = adminPassInput.value;
+
+        if (username !== ADMIN_USER || password !== ADMIN_PASS) {
+          adminError.style.display = "block";
+          return;
+        }
+
+        adminLoginForm.reset();
+        showScreen(adminDashboard);
+      });
+
+      // ==========================
+      // ADMIN DASHBOARD FLOW
+      // ==========================
+      adminEventSelect.addEventListener("change", () => {
+        selectedAdminType = "";
+        selectedAdminHiddenCode = "";
+        adminStep3.style.display = "none";
+        adminNameInput.value = "";
+        resetAdminPreview();
+        Array.from(certTypeGrid.children).forEach((button) => {
+          const hiddenCode = getHiddenCode(
+            adminEventSelect.value,
+            button.dataset.type,
           );
+          button.dataset.hiddenCode = hiddenCode;
+          button.classList.remove("active");
+        });
+      });
+
+      certTypeGrid.addEventListener("click", (event) => {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const eventId = adminEventSelect.value;
+        if (!eventId) return;
+
+        selectedAdminType = button.dataset.type;
+        selectedAdminHiddenCode =
+          button.dataset.hiddenCode ||
+          getHiddenCode(eventId, selectedAdminType);
+        Array.from(certTypeGrid.children).forEach((btn) => {
+          btn.classList.toggle("active", btn === button);
+        });
+
+        adminStepLabel.textContent = `Step 3: ${
+          EVENTS.find((ev) => ev.id === eventId)?.name || eventId
+        } — ${
+          CERT_TYPES.find((type) => type.key === selectedAdminType)?.label ||
+          selectedAdminType
+        }`;
+        adminStep3.style.display = "block";
+        adminNameInput.value = "";
+        resetAdminPreview();
+      });
+
+      adminGenerateBtn.addEventListener("click", async () => {
+        const eventId = adminEventSelect.value;
+        const name = adminNameInput.value.trim();
+
+        if (!eventId || !selectedAdminType || !name) {
+          return;
         }
 
-        function updateCertificatePreview() {
-          const cfg = getCurrentConfig();
-          certImage.src = cfg.image;
-          certTypeLabel.textContent = cfg.label;
-          nameOverlay.style.fontFamily = cfg.fontFamily;
-        }
-
-        function openGeneratorWithName(nameValue, certType, adminMode = false) {
-          studentName = nameValue;
-          selectedCertType = certType;
-          isAdminMode = adminMode;
-
-          nameOverlay.textContent = studentName;
-          updateCertificatePreview();
-
-          if (adminMode) {
-            adminScreen.style.opacity = "0";
-          } else {
-            loginScreen.style.opacity = "0";
-          }
-
-          setTimeout(() => {
-            loginScreen.style.display = "none";
-            adminScreen.style.display = "none";
-            generatorScreen.style.display = "flex";
-            document.body.style.display = "block";
-
-            setTimeout(() => {
-              adjustOverlaySize();
-            }, 60);
-          }, 300);
-        }
-
-        // Switch to Generator Screen for normal user (Participation)
-        nameForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-          const inputName = studentNameInput.value.trim();
-
-          if (inputName) {
-            openGeneratorWithName(inputName, "participation", false);
-          }
+        await renderCertificate({
+          eventId,
+          certType: selectedAdminType,
+          name,
+          previewImg: adminPreviewImg,
+          onRendered: (dataUrl) => {
+            adminDownloadUrl = dataUrl;
+            adminPreview.style.display = "flex";
+          },
         });
+      });
 
-        openAdminScreenBtn.addEventListener("click", () => {
-          loginScreen.style.display = "none";
-          adminScreen.style.display = "block";
-          document.body.style.display = "flex";
-          setTimeout(() => {
-            adminScreen.style.opacity = "1";
-          }, 50);
+      adminDownloadBtn.addEventListener("click", () => {
+        if (!adminDownloadUrl) return;
+        const eventId = adminEventSelect.value;
+        const eventName =
+          EVENTS.find((event) => event.id === eventId)?.name || eventId;
+        const typeLabel =
+          CERT_TYPES.find((type) => type.key === selectedAdminType)?.label ||
+          selectedAdminType;
+        const name = sanitizeFilename(adminNameInput.value);
+        const fileName = `${name}_${sanitizeFilename(eventName)}_${sanitizeFilename(
+          typeLabel,
+        )}.jpg`;
+        const link = document.createElement("a");
+        link.href = adminDownloadUrl;
+        link.download = fileName;
+        link.click();
+      });
+
+      logoutBtn.addEventListener("click", () => {
+        adminEventSelect.value = "";
+        adminNameInput.value = "";
+        selectedAdminType = "";
+        selectedAdminHiddenCode = "";
+        resetAdminPreview();
+        adminStep3.style.display = "none";
+        Array.from(certTypeGrid.children).forEach((button) => {
+          button.classList.remove("active");
+          button.dataset.hiddenCode = "";
         });
-
-        backToUserBtn.addEventListener("click", () => {
-          adminScreen.style.display = "none";
-          loginScreen.style.display = "block";
-          document.body.style.display = "flex";
-          setTimeout(() => {
-            loginScreen.style.opacity = "1";
-          }, 50);
-        });
-
-        // Admin login flow
-        adminLoginForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-          const username = adminUsernameInput.value.trim();
-          const password = adminPasswordInput.value;
-
-          if (
-            username === ADMIN_CREDENTIALS.username &&
-            password === ADMIN_CREDENTIALS.password
-          ) {
-            adminErrorMsg.style.display = "none";
-            adminLoginWrap.style.display = "none";
-            adminPanel.style.display = "block";
-            selectedCertType = "runner";
-            updateCertTypeButtons();
-          } else {
-            adminErrorMsg.style.display = "block";
-          }
-        });
-
-        runnerTypeBtn.addEventListener("click", () => {
-          selectedCertType = "runner";
-          updateCertTypeButtons();
-        });
-
-        winnerTypeBtn.addEventListener("click", () => {
-          selectedCertType = "winner";
-          updateCertTypeButtons();
-        });
-
-        adminNameForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-          const inputName = adminStudentNameInput.value.trim();
-
-          if (inputName) {
-            openGeneratorWithName(inputName, selectedCertType, true);
-          }
-        });
-
-        // Switch to Login Screen
-        backBtn.addEventListener("click", () => {
-          generatorScreen.style.display = "none";
-          if (isAdminMode) {
-            adminScreen.style.display = "block";
-          } else {
-            loginScreen.style.display = "block";
-          }
-          document.body.style.display = "flex";
-          setTimeout(() => {
-            if (isAdminMode) {
-              adminScreen.style.opacity = "1";
-            } else {
-              loginScreen.style.opacity = "1";
-            }
-          }, 50);
-        });
-
-        // Close Modal & Reset
-        closeModalBtn.addEventListener("click", () => {
-          successModal.style.opacity = "0";
-          successModal.querySelector(".modal-content").style.transform =
-            "translateY(20px)";
-
-          setTimeout(() => {
-            successModal.style.display = "none";
-            // Reset to home
-            generatorScreen.style.display = "none";
-            studentNameInput.value = "";
-            adminStudentNameInput.value = "";
-            loginScreen.style.display = "block";
-            adminScreen.style.display = "none";
-            document.body.style.display = "flex";
-
-            adminLoginWrap.style.display = "block";
-            adminPanel.style.display = "none";
-            adminUsernameInput.value = "";
-            adminPasswordInput.value = "";
-            adminErrorMsg.style.display = "none";
-
-            selectedCertType = "participation";
-            isAdminMode = false;
-
-            setTimeout(() => {
-              loginScreen.style.opacity = "1";
-            }, 50);
-          }, 300);
-        });
-
-        function resetToHome() {
-          generatorScreen.style.display = "none";
-          studentNameInput.value = "";
-          adminStudentNameInput.value = "";
-          loginScreen.style.display = "block";
-          adminScreen.style.display = "none";
-          document.body.style.display = "flex";
-
-          adminLoginWrap.style.display = "block";
-          adminPanel.style.display = "none";
-          adminUsernameInput.value = "";
-          adminPasswordInput.value = "";
-          adminErrorMsg.style.display = "none";
-
-          selectedCertType = "participation";
-          isAdminMode = false;
-
-          setTimeout(() => {
-            loginScreen.style.opacity = "1";
-          }, 50);
-        }
-
-        // Calculate Name position and size
-        function adjustOverlaySize() {
-          if (certImage.complete && certImage.naturalHeight > 0) {
-            const cfg = getResolvedConfig(
-              certImage.naturalWidth,
-              certImage.naturalHeight,
-            );
-            const rect = certImage.getBoundingClientRect();
-            const renderedWidth = rect.width;
-            const renderedHeight = rect.height;
-
-            const xPos = renderedWidth * cfg.xPosPercent;
-            const yPos = renderedHeight * cfg.yPosPercent;
-
-            nameOverlay.style.left = `${xPos}px`;
-            nameOverlay.style.top = `${yPos}px`;
-
-            const baseFontSize = renderedHeight * cfg.fontSizePercent;
-            nameOverlay.style.fontSize = `${baseFontSize}px`;
-            nameOverlay.style.fontFamily = cfg.fontFamily;
-
-            const transformY = cfg.transformY || "-50%";
-            nameOverlay.style.transform = `translate(-50%, ${transformY}) scale(1)`;
-
-            const textWidth = nameOverlay.offsetWidth;
-            const maxWidth = renderedWidth * cfg.maxWidthPercent;
-
-            if (textWidth > maxWidth) {
-              const scaleFactor = maxWidth / textWidth;
-              nameOverlay.style.transform = `translate(-50%, ${transformY}) scale(${scaleFactor})`;
-            }
-          }
-        }
-
-        window.addEventListener("resize", () => {
-          if (generatorScreen.style.display !== "none") {
-            adjustOverlaySize();
-          }
-        });
-        certImage.addEventListener("load", adjustOverlaySize);
-
-        // Show Success Modal
-        function showSuccess() {
-          successModal.style.display = "flex";
-          // Trigger reflow
-          void successModal.offsetWidth;
-          successModal.style.opacity = "1";
-          successModal.querySelector(".modal-content").style.transform =
-            "translateY(0)";
-        }
-
-        // JPG Generation
-        downloadBtn.addEventListener("click", async () => {
-          if (!studentName) return;
-
-          // Set loading state
-          downloadBtn.disabled = true;
-          btnLoader.style.display = "block";
-          downloadIcon.style.display = "none";
-          btnText.textContent = "Generating JPG...";
-
-          try {
-            await document.fonts.ready;
-
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-
-            canvas.width = certImage.naturalWidth;
-            canvas.height = certImage.naturalHeight;
-
-            const cfg = getResolvedConfig(canvas.width, canvas.height);
-
-            ctx.drawImage(certImage, 0, 0);
-
-            const xPos = canvas.width * cfg.xPosPercent;
-            const yPos = canvas.height * cfg.yPosPercent;
-            const baseFontSize = canvas.height * cfg.fontSizePercent;
-            const maxWidth = canvas.width * cfg.maxWidthPercent;
-
-            ctx.font = `${baseFontSize}px ${cfg.fontFamily}`;
-            ctx.fillStyle = "#000000";
-            ctx.textAlign = "center";
-            ctx.textBaseline = cfg.textBaseline || "middle";
-
-            let textWidth = ctx.measureText(studentName).width;
-            let renderFontSize = baseFontSize;
-
-            if (textWidth > maxWidth) {
-              const scaleFactor = maxWidth / textWidth;
-              renderFontSize = baseFontSize * scaleFactor;
-              ctx.font = `${renderFontSize}px ${cfg.fontFamily}`;
-            }
-
-            ctx.fillText(studentName, xPos, yPos);
-
-            const safeName = studentName
-              .replace(/[^a-zA-Z0-9]/g, "_")
-              .toLowerCase();
-            const certPrefix = isAdminMode ? cfg.label : "Participation";
-            const fileName = `BIRDS_Club_${certPrefix}_Certificate_${safeName}.jpg`;
-            const imageUrl = canvas.toDataURL("image/jpeg", 1.0);
-
-            const tempLink = document.createElement("a");
-            tempLink.href = imageUrl;
-            tempLink.download = fileName;
-            tempLink.click();
-
-            // Show success directly after saving
-            setTimeout(() => {
-              showSuccess();
-            }, 500);
-          } catch (error) {
-            console.error("JPG Generation Error:", error);
-            if (
-              error.name === "SecurityError" ||
-              error.message.includes("Tainted")
-            ) {
-              alert(
-                "Security Error: Please run this file via a local web server.",
-              );
-            } else {
-              alert("There was an error generating the JPG.");
-            }
-          } finally {
-            // Revert UI
-            downloadBtn.disabled = false;
-            btnLoader.style.display = "none";
-            downloadIcon.style.display = "block";
-            btnText.textContent = "Download JPG";
-          }
-        });
-
-        updateCertificatePreview();
-        updateCertTypeButtons();
+        showScreen(studentScreen);
       });
     </script>
   </body>
